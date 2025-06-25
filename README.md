@@ -44,14 +44,13 @@ I’m currently working on the task lists that you’ll be able to choose from b
 
 ## 🙏 Contributors & Early Supporters
 Thank you to everyone who has already shown interest and joined this project! Your enthusiasm and support mean a lot.
-
-**NoridelHerron** [NoridelHerron](https://github.com/NoridelHerron)  
-**Pavan SV** [30383] (https://github.com/30383)
-**Omar Abdelkareem** [OmarAbdelkareem21] (https://github.com/OmarAbdelkareem21) 
-**Siva Naik Kurra** [sivanaik828] (https://github.com/sivanaik828) 
-**Sivanandham Kuppusamy** 
-**Tejeswara Reddy Dudyala** 
-**S N Ravindra** 
+- **NoridelHerron** [NoridelHerron](https://github.com/NoridelHerron)  
+- **Pavan SV** [30383] (https://github.com/30383)
+- **Omar Abdelkareem** [OmarAbdelkareem21] (https://github.com/OmarAbdelkareem21) 
+- **Siva Naik Kurra** [sivanaik828] (https://github.com/sivanaik828) 
+- **Sivanandham Kuppusamy** 
+- **Tejeswara Reddy Dudyala** 
+- **S N Ravindra** 
 ........
 
 If this sounds exciting or meaningful to you and like be listed as a contributor, just reach out! Let’s build something that helps the next generation of CPU designers.
