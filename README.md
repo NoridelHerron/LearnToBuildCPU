@@ -1,13 +1,17 @@
-# LearnToBuildCPU - Refactor Project
-I’m refactoring my first RISC-V pipeline CPU project into a more modular, beginner-friendly version — and I’d love to team up with other students or early learners who want to build practical experience and strengthen their resumes through hands-on work.
+## Welcome to the LearnToBuildCPU project!
+The primary purpose of this project is to make learning computer architecture easier and more accessible for students, hobbyists, and aspiring engineers. I want this to be the kind of resource I wish I had when I first started.
 
----
+This project is designed to be:
+- As basic and readable as possible – so even beginners can follow along.
+- Modular and well-documented – each component is explained, with clear roles and signal flows.
+- Built in multiple HDLs – such as VHDL and Verilog/SystemVerilog, so learners can compare and learn from different styles and languages.
+- Expandable for deeper learning – while the core is kept simple, there are opportunities to learn more advanced topics such as:
+    - Writing wrappers
+    - Using records/structs
+    - Building simulation testbenches
+    - Understanding control signals, hazard detection, and forwarding
 
-## 🧠 The Goal
-Transform this project into a clear, educational resource by:
-- Flattening the I/O (no records) so new learners can easily follow the signal flow
-- Making modules clean and modular for easier study, modification, and extension
-- Documenting everything clearly for those just starting out
+I know how it feels to work in the dark, trying to build something you don’t fully understand. That’s why everything in this project is being documented carefully—so as you build, you also understand.
 
 ---
 
@@ -25,20 +29,26 @@ Transform this project into a clear, educational resource by:
 
 ## 🧪 Testbench Plans
 Once I finish my current superscalar project, I will:
-- Write a SystemVerilog testbench with assertions to ensure all contributor-built modules are rock solid
+- Write a SystemVerilog/VHDL testbench with assertions to ensure all contributor-built modules are rock solid
 - Inject bugs to demonstrate debugging techniques
 - Add a TCL + waveform debugging guide
 - Possibly publish a tutorial or blog post for learners to follow
 
 ---
 
-## ⚠️ Acknowledgement
-I’m aware that my project currently has many flaws. While I’ll work to refactor the modules and connect the pieces properly based on the RISC-V standard, I’m also actively seeking knowledgeable reviewers to help ensure the design follows best practices and standards.
+## 💡 Personal Vision & Acknowledgement
+I’m aware that this project currently has several flaws and areas that need improvement. As I continue refactoring and connecting the modules properly according to the RISC-V standard, my personal goal is to rebuild the design following more standard and widely accepted practices—not just based on observation or intuition.
+
+This project is also a learning journey for me. I'm actively seeking feedback and input from more experienced developers to ensure that the architecture and implementation reflect best practices. By doing this, I hope to both deepen my own understanding and make the project more reliable, educational, and transparent for others who want to learn.
 
 ---
 
 ## 🔧 Note to all contributors:
-I’m currently working on the task lists that you’ll be able to choose from based on your interests and comfort level. Each contributor will have their own branch with their first name on it, so everyone can work independently while keeping things organized.
+I’m currently preparing a list of tasks that you’ll be able to choose from based on your interests and comfort level. Each contributor will have their own branch named after their first name, so everyone can work independently while keeping the workflow organized.
+
+If you have your own ideas on how you’d like to contribute, feel free to share—I’m definitely open to suggestions!
+
+Let’s learn and build together. 🚀
 
 ---
 
