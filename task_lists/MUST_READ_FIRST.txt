@@ -1,6 +1,7 @@
-		VHDL  VERILOG  SYSTEM_VERILOG
-ALU			ok
+Assigned	     VERILOG	           VHDL			SYSTEM VERILOG
+ALU		In Verilog done: VHDL still need clean up :     Open
 DECODER		----------assigned-----------
 HDU		----------assigned-----------
-IF_and_ROM	available
 WB		----------assigned-----------
+
+If a task isn’t marked as assigned or completed in the list above, that means it’s open for anyone to contribute.
