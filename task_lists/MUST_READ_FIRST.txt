@@ -1,0 +1,6 @@
+		VHDL  VERILOG  SYSTEM_VERILOG
+ALU			ok
+DECODER		----------assigned-----------
+HDU		----------assigned-----------
+IF_and_ROM	available
+WB		----------assigned-----------
