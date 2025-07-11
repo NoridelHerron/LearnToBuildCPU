@@ -42,11 +42,15 @@ module alu_32bit (
                     result = temp[31:0];
                     C = ~temp[32]; // Borrow = 0 → C = 1
                     V = (A[31] != B[31]) && (result[31] != A[31]);
-                end else begin
+                end else if (f7 == `FUNC7_ADD) begin
                     temp = {1'b0, A} + {1'b0, B};
                     result = temp[31:0];
                     C = temp[32]; // Carry-out
                     V = (A[31] == B[31]) && (result[31] != A[31]);
+                end else begin
+                    result = 32'b0;
+                    C = 1'b0;
+                    V = 1'b0;
                 end
             end
 
@@ -67,10 +71,13 @@ module alu_32bit (
             end
 
             `FUNC3_SRL_SRA: begin
-                if (f7 == `FUNC7_SRA)
+                if (f7 == `FUNC7_SRA) begin
                     result = $signed(A) >>> B[4:0];
-                else
+                end else if (f7 == `FUNC7_SRL) begin
                     result = A >> B[4:0];
+                end else begin
+                    result = 32'b0;
+                end 
             end
 
             `FUNC3_OR: begin
