@@ -38,6 +38,8 @@ Once I finish my current superscalar project, I will:
 - Add a TCL + waveform debugging guide
 - Possibly publish a tutorial or blog post for learners to follow
 
+**NOTE**: I've written testbenches for the ALU and decoder modules. Feel free to use them—just make sure to update the DUT instance name if yours is different. You may also need to adjust the input and output connections if your port order is not the same. And of course, feel free to modify the testbenches as needed.
+
 ---
 
 ## 💡 Personal Vision & Acknowledgement

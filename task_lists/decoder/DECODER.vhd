@@ -57,6 +57,10 @@ begin
                 
             when U_LUI | U_AUIPC =>  
                 temp.imm20  := ID(31 downto 12); 
+                temp.funct7 := ZERO_7bits;
+                temp.rs2    := ZERO_5bits;  
+                temp.rs1    := ZERO_5bits; 
+                temp.funct3 := ZERO_3bits; 
             
             when JAL =>  
                 temp        := EMPTY_DECODER;
