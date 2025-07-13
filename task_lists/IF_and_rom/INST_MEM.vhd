@@ -4,46 +4,36 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
-
-library work;
-use work.Pipeline_Types.all;
-use work.const_Types.all;
+use IEEE.math_real.ALL;  -- uniform's library
 
 entity INST_MEM is
     Port (
             clk    : in  std_logic;        
-            addr   : in  std_logic_vector(DATA_WIDTH-1 downto 0);  -- byte address input
-            instr  : out std_logic_vector(DATA_WIDTH-1 downto 0)   -- instruction output
+            addr   : in  std_logic_vector(31 downto 0);  -- byte address input
+            instr  : out std_logic_vector(31 downto 0)   -- instruction output
         );
 end INST_MEM;
 
 architecture read_only of INST_MEM is
 
-    type memory_array is array (0 to 255) of std_logic_vector(31 downto 0);
-    signal rom : memory_array := (
-        0  => x"00010A63", -- beq x2, x0, 10	--> this is true so, it will jump to pc(4) + offset(20) 
-        1  => x"00A00093", -- addi x1, x0, 10   --> IGNORED
-        2  => x"01400193", -- addi x3, x0, 20   --> IGNORED
-        3  => x"00008063", -- beq x1, x0, 0     --> IGNORED
-        4  => x"00100213",  -- addi x4, x0, 1   --> IGNORED
-        5  => x"00200293", -- addi x5, x0, 2	--> index 0 will jump here pc = 24 and wb.data = 2
-        6  => x"00300313", -- addi x6, x0, 3	--> wb.data = 3
-        7  => x"00400393", -- addi x7, x0, 4	--> wb.data = 4
-        8  => x"014000EF", -- jal x1, 5120 	    --> Jump to pc (36) + offset(20) = 56 in hex 38, rd = 36 + 	4 = 40 in hex 28
-        9  => x"00500413",  -- addi x8, x0, 5	--> IGNORED
-        10 => x"00600493",  -- addi x9, x0, 6 	--> IGNORED
-        11 => x"00500413",  -- addi x8, x0, 5	--> IGNORED
-        12 => x"00600493",  -- addi x9, x0, 6   --> IGNORED
-        13 => x"01400193", -- addi x3, x0, 20  	--> wb.data = 14
-        14 => x"00012103", -- lw x2, 0(x2)	    --> wb.data = 0, there's nothing in the memory so its 0
-        15 => x"00200293", -- addi x5, x0, 2	--> wb.data = 2
-        16 => x"00300313", -- addi x6, x0, 3	--> wb.data = 3
-        17 => x"00400393", -- addi x7, x0, 4	--> wb.data = 4
-        18 => x"00008193", -- addi x3, x1, 0	--> wb.data = 0
-
-        others => x"00000013"  -- nop (ADDI x0, x0, 0)
-    );
-
+    -- OPCODE TYPE
+    constant R_TYPE : std_logic_vector(6 downto 0) := "0110011";
+    constant I_IMME : std_logic_vector(6 downto 0) := "0010011";
+    constant LOAD   : std_logic_vector(6 downto 0) := "0000011";
+    constant S_TYPE : std_logic_vector(6 downto 0) := "0100011";
+    constant B_TYPE : std_logic_vector(6 downto 0) := "1100011";
+    constant JAL    : std_logic_vector(6 downto 0) := "1101111";
+    
+    -- f3 for B_TYPE
+    constant BEQ  : std_logic_vector(2 downto 0) := "000";
+    constant BNE  : std_logic_vector(2 downto 0) := "001";
+    constant BLT  : std_logic_vector(2 downto 0) := "100";
+    constant BGE  : std_logic_vector(2 downto 0) := "101";
+    constant BLTU : std_logic_vector(2 downto 0) := "110";
+    constant BGEU : std_logic_vector(2 downto 0) := "111";
+    
+    type memory_array is array (0 to 1023) of std_logic_vector(31 downto 0);
+    signal rom : memory_array := (others => x"00000013");
     signal instr_reg : std_logic_vector(31 downto 0);
 
 begin
@@ -57,5 +47,80 @@ begin
     end process;
 
     instr <= instr_reg;
+    
+    ----------------------------------------------------------------
+    -- Initialization of ROM using randomized instructions
+    ----------------------------------------------------------------
+    
+    init_rom: process
+    variable seed1, seed2       : positive := 1;
+    variable rand, rand1, rand2 : real;
+    variable opcode             : std_logic_vector(6 downto 0)  := (others => '0');
+    variable f3                 : std_logic_vector(2 downto 0)  := (others => '0');
+    variable rd, rs1, rs2       : std_logic_vector(4 downto 0)  := (others => '0');
+    variable f7                 : std_logic_vector(6 downto 0)  := (others => '0');
+    begin
+    
+        for i in 0 to 18 loop
+            -- Generate random value
+            uniform(seed1, seed2, rand);
+            uniform(seed1, seed2, rand1);
+            uniform(seed1, seed2, rand2);
+            
+            -- Determine the instruction type
+            if    rand < 0.1  then opcode := LOAD;
+            elsif rand < 0.2  then opcode := S_TYPE;
+            elsif rand < 0.3  then opcode := JAL;
+            elsif rand < 0.4  then opcode := B_TYPE;
+            elsif rand < 0.7  then opcode := I_IMME;
+            else opcode := R_TYPE;
+            end if;
+            
+            rd  := std_logic_vector(to_unsigned(integer(rand * 32.0), 5));
+            rs1 := std_logic_vector(to_unsigned(integer(rand1 * 32.0), 5));
+            rs2 := std_logic_vector(to_unsigned(integer(rand2 * 32.0), 5));
+            f3  := std_logic_vector(to_unsigned(integer(rand * 8.0), 3));
+            f7  := std_logic_vector(to_unsigned(integer(rand * 128.0), 7));
+            
+            case opcode is
+                when R_TYPE => -- if f3 = 0 choose between add or sub or if f3 is 5 choose between srl or sra
+                    if f3 = "000" or f3 = "101" then
+                        if rand1 < 0.5 then
+                            f7 := x"20"; -- sub | sra
+                        else
+                            f7 := (others => '0'); -- add | srl
+                        end if;
+                    end if;
+                    
+                when B_TYPE => 
+                    if    rand2 < 0.1   then f3 := BGEU;
+                    elsif rand2 < 0.25  then f3 := BLT;
+                    elsif rand2 < 0.4   then f3 := BGE;
+                    elsif rand2 < 0.65  then f3 := BLTU;
+                    elsif rand2 < 0.8   then f3 := BNE;
+                    else f3 := BEQ;
+                    end if;
+                    
+                when S_TYPE => f3 := "010"; -- sw for 32 bits 
+                
+                when LOAD   => f3 := "010"; -- lw for 32 bits 
+                
+                when I_IMME => -- if f3 is 5 choose between srli or srai
+                    if f3 = "101" then
+                        if rand2 < 0.5 then
+                            f7 := x"20"; -- srai
+                        else
+                            f7 := (others => '0'); -- srli
+                        end if;
+                    end if;
+                    
+                when others => -- 
+            end case;
+            rom(i) <= f7 & rs2 & rs1 & f3 & rd & opcode;
+            
+        end loop; 
+        wait; -- process runs once at time 0
+        
+    end process;
 
 end read_only;
