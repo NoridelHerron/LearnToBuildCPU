@@ -18,13 +18,6 @@ architecture Behavioral of WB_STA is
 
 begin
     -- chooses which data to send based on the control signal
-    process(is_regWrite, is_memRead, mem_data, alu_data)
-    begin
-        if is_regWrite = '1' and is_memRead = '1'then
-            wb_data <= mem_data;       
-        else
-            wb_data <= alu_data;            
-        end if;
-    end process;
-    
+    wb_data <= mem_data when is_regWrite = '1' and is_memRead = '1' else alu_data;      
+
 end Behavioral;
