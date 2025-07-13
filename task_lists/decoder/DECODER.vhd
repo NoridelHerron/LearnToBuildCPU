@@ -12,7 +12,7 @@ library work;
 
 entity DECODER is
     Port (  -- inputs 
-            ID          : in  std_logic_vector(31 downto 0);       
+            ID      : in  std_logic_vector(31 downto 0);       
             op      : out std_logic_vector(6 downto 0);    -- opcode  
             rd      : out std_logic_vector(4 downto 0);  -- register destination
             funct3  : out std_logic_vector(2 downto 0);    -- type of operation

@@ -93,6 +93,7 @@ module tb_decoder( );
         endfunction
         
         task check();
+            // EXPECTED OUTPUT
             case(rand_op)
                 R_TYPE  : expected = '{op : instr[6:0], rd : instr[11:7], f3 : instr[14:12], rs1 : instr[19:15], rs2 : instr[24:20], f7 : instr[31:25], imm12 : 12'b0, imm20 : 20'b0}; 
                 S_TYPE  : expected = '{op : instr[6:0], rd : 5'b0, f3 : instr[14:12], rs1 : instr[19:15], rs2 : instr[24:20], f7 : 5'b0, imm12 : {instr[31:25], instr[11:7]}, imm20 : 20'b0}; 
@@ -122,7 +123,8 @@ module tb_decoder( );
                     U_AUIPC : pua++; 
                     default : pd++; 
                 endcase 
-            end else begin   
+            end else begin 
+                // NARROW DOWN BUGS  
                 $display("actual.op = %0d : expected.op = %0d ", actual.op, expected.op);
                 if (actual.op    !== expected.op)    fop++;
                 if (actual.rd    !== expected.rd)    frd++;

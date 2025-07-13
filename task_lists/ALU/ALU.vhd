@@ -9,128 +9,127 @@ use IEEE.NUMERIC_STD.ALL;
 
 -- CUSTOMIZED PACKAGE
 library work;
-use work.Pipeline_Types.all;
-use work.const_Types.all;
-use work.ENUM_T.all; 
-use work.initialize_records.all;
 
 entity ALU is
-    Port ( 
-            input    : in ALU_in;
-            output   : out ALU_out
+    Port ( A, B       : in  std_logic_vector(31 downto 0); 
+           f3         : in  std_logic_vector(2 downto 0); 
+           f7         : in  std_logic_vector(6 downto 0); 
+           result     : out std_logic_vector(31 downto 0); 
+           Z, N, C, V : out std_logic 
         );
 end ALU;
 
 architecture Behavioral of ALU is
 
+-- function 3
+constant FUNC3_ADD_SUB : std_logic_vector(2 downto 0) := "000"; 
+constant FUNC3_SLL     : std_logic_vector(2 downto 0) := "001";
+constant FUNC3_SLT     : std_logic_vector(2 downto 0) := "010";  
+constant FUNC3_SLTU    : std_logic_vector(2 downto 0) := "011"; 
+constant FUNC3_XOR     : std_logic_vector(2 downto 0) := "100";
+constant FUNC3_SRL_SRA : std_logic_vector(2 downto 0) := "101"; 
+constant FUNC3_OR      : std_logic_vector(2 downto 0) := "110"; 
+constant FUNC3_AND     : std_logic_vector(2 downto 0) := "111";   
+
+-- function 7
+constant FUNC7_ADD     : std_logic_vector(6 downto 0) := "0000000"; 
+constant FUNC7_SUB     : std_logic_vector(6 downto 0) := "0100000"; 
+constant FUNC7_SRL     : std_logic_vector(6 downto 0) := "0000000"; 
+constant FUNC7_SRA     : std_logic_vector(6 downto 0) := "0100000"; 
+
 begin
     
-    process (input)
-    variable res_temp : ALU_out := EMPTY_ALU_out;
-    variable temp     : unsigned(DATA_WIDTH downto 0);
+    process (A, B, f3, f7)
+    variable temp     : unsigned(32 downto 0)           := (others=>'0'); 
+    variable temp_res : std_logic_vector(31 downto 0)   := (others=>'0'); 
+    variable temp_C, temp_V, temp_N, temp_Z : std_logic := '0';
     begin
-        -- C and V flags
-        res_temp.C := NONE;
-        res_temp.V := NONE;
-        case input.f3 is
+        temp_C := '0';
+        temp_V := '0';
+        case f3 is
             when FUNC3_ADD_SUB =>  -- ADD/SUB
-                case input.f7 is
+                case f7 is
                     when FUNC7_ADD =>    -- ADD
-                        temp := resize(unsigned(input.A), DATA_WIDTH+1) + 
-                                resize(unsigned(input.B), DATA_WIDTH+1);
-                        res_temp.result     := std_logic_vector(temp(DATA_WIDTH-1 downto 0));
-                        res_temp.operation  := ALU_ADD;
-                        if temp(DATA_WIDTH) = '1' then 
-                            res_temp.C := Cf; 
+                        temp     := resize(unsigned(A), 33) + resize(unsigned(B), 33);
+                        temp_res := std_logic_vector(temp(31 downto 0));
+                        
+                        if temp(32) = '1' then 
+                            temp_C := '1';  
                         else 
-                            res_temp.C := NONE; 
+                            temp_C := '0';
                         end if;                      
                         
-                        if ((input.A(DATA_WIDTH - 1) = input.B(DATA_WIDTH - 1)) and 
-                           (res_temp.result(DATA_WIDTH - 1) /= input.A(DATA_WIDTH - 1))) then
-                            res_temp.V := V; 
+                        if ((A(31) = B(31)) and (temp_res(31) /= A(31))) then 
+                            temp_V := '1'; 
                         else 
-                            res_temp.V := NONE; 
+                            temp_V := '0';    
                         end if;
   
                     when FUNC7_SUB =>   -- SUB (RISC-V uses 0b0100000 = 32 decimal)
-                        temp := resize(unsigned(input.A), DATA_WIDTH+1) - 
-                                resize(unsigned(input.B), DATA_WIDTH+1);
-                        res_temp.result     := std_logic_vector(temp(DATA_WIDTH-1 downto 0));
-                        res_temp.operation  := ALU_SUB;
- 
-                        if temp(DATA_WIDTH) = '0' then 
-                            res_temp.C := Cf;  -- No borrow → C = 1
+                        temp     := resize(unsigned(A), 33) - resize(unsigned(B), 33);
+                        temp_res := std_logic_vector(temp(31 downto 0));
+                 
+                        if temp(32) = '0' then 
+                            temp_C := '1';  -- No borrow → C = 1
                         else 
-                            res_temp.C := NONE;  -- Borrow → C = 0
+                            temp_C := '0';  -- Borrow → C = 0
                         end if;
                     
-                        if ((input.A(DATA_WIDTH - 1) /= input.B(DATA_WIDTH - 1)) and 
-                           (res_temp.result(DATA_WIDTH - 1) /= input.A(DATA_WIDTH - 1))) then
-                            res_temp.V := V; 
+                        if ((A(31) /= B(31)) and (temp_res(31) /= A(31))) then
+                            temp_V := '1'; 
                         else 
-                            res_temp.V := NONE; 
+                            temp_V := '0'; 
                         end if;
   
-                    when others =>
-                        res_temp := EMPTY_ALU_out;  
+                    when others => temp_res := (others => '0');
                 end case;
 
-            when FUNC3_SLL =>  -- SLL
-                res_temp.result := std_logic_vector(shift_left(unsigned(input.A), to_integer(unsigned(input.B(SHIFT_WIDTH - 1 downto 0)))));
-                res_temp.operation := ALU_SLL;
+            when FUNC3_SLL =>  
+                temp_res := std_logic_vector(shift_left(unsigned(A), to_integer(unsigned(B(4 downto 0)))));
 
             when FUNC3_SLT =>  -- SLT
-                if signed(input.A) < signed(input.B) then
-                    res_temp.result := (DATA_WIDTH - 1 downto 1 => '0') & '1';
-                    res_temp.operation := ALU_SLT;
+                if signed(A) < signed(B) then
+                    temp_res := (31 downto 1 => '0') & '1';
                 else
-                    res_temp := EMPTY_ALU_out;
+                    temp_res := (others => '0');
                 end if;
 
             when FUNC3_SLTU =>  -- SLTU
-                if unsigned(input.A) < unsigned(input.B) then
-                    res_temp.result := (DATA_WIDTH - 1 downto 1 => '0') & '1';
-                    res_temp.operation := ALU_SLTU;
+                if unsigned(A) < unsigned(B) then
+                    temp_res := (31 downto 1 => '0') & '1';    
                 else
-                    res_temp := EMPTY_ALU_out;
+                    temp_res := (others => '0');
                 end if;
 
-            when FUNC3_XOR =>  -- XOR
-                res_temp.result := input.A xor input.B;
-                res_temp.operation := ALU_XOR;
-
-            when FUNC3_SRL_SRA =>  -- SRL/SRA
-                case input.f7 is
+            when FUNC3_XOR => temp_res := A xor B;
+               
+            when FUNC3_SRL_SRA =>  
+                case f7 is
                     when FUNC7_SRL =>    -- SRL
-                        res_temp.result := std_logic_vector(shift_right(unsigned(input.A), to_integer(unsigned(input.B(SHIFT_WIDTH - 1 downto 0)))));
-                        res_temp.operation := ALU_SRL;
+                        temp_res := std_logic_vector(shift_right(unsigned(A), to_integer(unsigned(B(4 downto 0)))));
                     when FUNC7_SRA =>   -- SRA
-                        res_temp.result := std_logic_vector(shift_right(signed(input.A), to_integer(unsigned(input.B(SHIFT_WIDTH - 1 downto 0)))));
-                        res_temp.operation := ALU_SRA;
+                        temp_res := std_logic_vector(shift_right(signed(A), to_integer(unsigned(B(4 downto 0)))));
                     when others =>
-                        res_temp := EMPTY_ALU_out;
+                        temp_res := (others => '0');
                 end case;
 
-            when FUNC3_OR =>  -- OR
-                res_temp.result := input.A or input.B;
-                res_temp.operation := ALU_OR;
-
-            when FUNC3_AND =>  -- AND
-                res_temp.result := input.A and input.B;
-                res_temp.operation := ALU_AND;
-
-            when others =>
-                res_temp := EMPTY_ALU_out;
+            when FUNC3_OR => temp_res := A or B;
+            
+            when FUNC3_AND => temp_res := A and B;
+             
+            when others => temp_res := (others => '0');
         end case;
         
         -- Z flag
-        if res_temp.result = ZERO_32bits then res_temp.Z := Z; else res_temp.Z := NONE; end if;
-        
+        if temp_res = x"00000000" then temp_Z := '1'; else temp_Z := '0'; end if;
         -- N flag
-        if res_temp.result(DATA_WIDTH - 1) = ONE then res_temp.N := N; else res_temp.N := NONE; end if;
+        if temp_res(31) = '1' then temp_N := '1'; else temp_N := '0'; end if;
         
-        output <= res_temp;
+        result <= temp_res;
+        Z      <= temp_Z;
+        V      <= temp_V;
+        C      <= temp_C;
+        N      <= temp_N;
 
     end process;
 
