@@ -3,17 +3,14 @@
 ----------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
-
--- CUSTOMIZED PACKAGE
-library work;
-use work.Pipeline_Types.all;
-use work.const_Types.all;
 
 entity WB_STA is
     Port (
-            MEM_WB          : in MEM_WB_Type;
-            WB              : out WB_Type
+            is_regWrite  : in std_logic;
+            is_memRead   : in std_logic;
+            mem_data     : in  std_logic_vector(31 downto 0);  
+            alu_data     : in  std_logic_vector(31 downto 0); 
+            wb_data      : out std_logic_vector(31 downto 0)
          );
 end WB_STA;
 
@@ -21,15 +18,13 @@ architecture Behavioral of WB_STA is
 
 begin
     -- chooses which data to send based on the control signal
-    process(MEM_WB)
+    process(is_regWrite, is_memRead, mem_data, alu_data)
     begin
-        if MEM_WB.reg_write = '1' and MEM_WB.mem_read = '1'then
-            WB.data     <= MEM_WB.mem_result;       
+        if is_regWrite = '1' and is_memRead = '1'then
+            wb_data <= mem_data;       
         else
-             WB.data     <= MEM_WB.alu_result;          
+            wb_data <= alu_data;            
         end if;
-        WB.rd       <= MEM_WB.rd;
-        WB.write    <= MEM_WB.reg_write;
     end process;
     
 end Behavioral;
