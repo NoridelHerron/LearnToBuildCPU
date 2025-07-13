@@ -1,5 +1,6 @@
+// Written by: S N Ravindra
+// Verified by: Noridel Herron
 `timescale 1ns / 1ps
-
 
 `define FUNC3_ADD_SUB  3'b000
 `define FUNC3_SLL      3'b001

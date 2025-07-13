@@ -61,14 +61,14 @@ module tb_alu();
         rand bit [6:0]  rand_f7;
         
         // To check all the valid cases, remove the comment in f7_condition and run simulation  
-        /*
+        
         constraint f7_condition {
             if (rand_f3 == 3'b000 || rand_f3 == 3'b101) {
                 rand_f7 inside {7'd0, 7'd32};
             } else {
                 rand_f7 == 7'd0;
             }
-        } */
+        } 
     
         function void apply_inputs();
                 actual_in.A  = rand_A;
