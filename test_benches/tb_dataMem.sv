@@ -21,7 +21,7 @@ module tb_dataMem();
     //logic [31:0] golden_mem[0:31]; I tend to use smaller array for initial test
     
     // Instantiate DUT
-    dataMem_v dut (
+    dataMemory_s dut (
         // inputs
         .clk(clk),
         .mem_read(act_in.mem_read),
