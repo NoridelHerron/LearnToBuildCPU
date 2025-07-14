@@ -29,13 +29,9 @@ begin
             if mem_write = '1' then               
                 mem(to_integer(unsigned(address))) <= write_data;
             end if;
-            
-            if mem_read = '1' then
-                read_data <= mem(to_integer(unsigned(address)));
-            else
-                read_data <= (others => '0');
-            end if;
         end if;
     end process;
+    
+    read_data <= mem(to_integer(unsigned(address))) when mem_read = '1' else (others => '0');
 
 end Behavioral;

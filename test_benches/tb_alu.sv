@@ -83,7 +83,7 @@ module tb_alu();
         endfunction
   
         task check();
-            #1; // wait for read combinational output
+            #1; // wait for the output to settle
             
             expected_out.C = 1'b0;
             expected_out.V = 1'b0;
