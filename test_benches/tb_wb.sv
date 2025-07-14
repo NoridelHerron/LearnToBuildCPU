@@ -17,7 +17,7 @@ module tb_wb();
     logic [31:0] act_data, exp_data; // outputs
     
     // Instantiate DUT
-    WB_STA dut (
+    WB_s dut (
         // inputs
         .is_memRead(act_in.is_memRead),
         .mem_data(act_in.mem_data),
