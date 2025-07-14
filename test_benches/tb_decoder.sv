@@ -33,7 +33,7 @@ module tb_decoder( );
     decoded_t    actual, expected;
     
     // Instantiate DUT
-    DECODER dut (
+    decoder_s dut (
         .ID(instr),
         // outputs
         .op(actual.op),
