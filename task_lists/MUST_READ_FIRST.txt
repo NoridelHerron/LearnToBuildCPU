@@ -1,7 +1,13 @@
-Assigned	     VERILOG	           VHDL			SYSTEM VERILOG
-ALU		In Verilog done: VHDL still need clean up :     Open
-DECODER		----------assigned-----------
+COMPLETED	     VERILOG	           VHDL			SYSTEM VERILOG
+ALU		     done		   done                 done
+DECODER		     done		   done                 done
+WB		     done		   done                 done
+DATA_MEMORY	     done		   done                 done
+
+
+ASSIGNED
 HDU		----------assigned-----------
-WB		----------assigned-----------
+
+
 
 If a task isn’t marked as assigned or completed in the list above, that means it’s open for anyone to contribute.
