@@ -42,13 +42,13 @@ module tb_wb();
         
         task check();
             #1; // wait for the output to settle
-            if (rand_mR == 1'b0) 
+            if (rand_mR == 1'b1) 
                 exp_data = rand_mem;
             else
                 exp_data = rand_alu;
             
            // Compare actual and expected output 
-           if (act_data === exp_data) 
+           if (act_data === exp_data ) 
                 pass++;
            else
                 fail++;   
@@ -70,6 +70,7 @@ module tb_wb();
             @(posedge clk);
             t.apply_inputs();  
             //@(posedge clk); 
+            #1;
             t.check();
         end
 
