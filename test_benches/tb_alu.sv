@@ -32,7 +32,7 @@ module tb_alu();
     alu_out     actual_out, expected_out;
 
     // Instantiate DUT
-    ALU dut (
+    alu_s dut (
         .A(actual_in.A),
         .B(actual_in.B),
         .f3(actual_in.f3),
