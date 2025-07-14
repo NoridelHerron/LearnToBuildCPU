@@ -17,10 +17,11 @@ module tb_dataMem();
     logic [31:0] act_data, exp_data; // outputs
     
     // Reference model
-    logic [31:0] golden_mem[1023:0];
+    logic [31:0] golden_mem[0:1023];
+    //logic [31:0] golden_mem[0:31]; I tend to use smaller array for initial test
     
     // Instantiate DUT
-    DATA_MEM dut (
+    dataMem_v dut (
         // inputs
         .clk(clk),
         .mem_read(act_in.mem_read),
