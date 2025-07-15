@@ -3,13 +3,13 @@
 // WB stage test bench
 `timescale 1ns / 1ps
 
-module tb_dataMem();
+module tb_mem_stage();
     logic clk = 0;
 
     typedef struct packed {
         logic         mem_read;
         logic         mem_write;
-        logic [9:0]   address;
+        logic [31:0]  address;
         logic [31:0]  write_data; 
     } dataMem_in;
     
@@ -21,15 +21,15 @@ module tb_dataMem();
     //logic [31:0] golden_mem[0:31]; I tend to use smaller array for initial test
     
     // Instantiate DUT
-    dataMem_v dut (
+    mem_stage_v dut (
         // inputs
         .clk(clk),
-        .mem_read(act_in.mem_read),
-        .mem_write(act_in.mem_write),
+        .is_memRead(act_in.mem_read),
+        .is_memWrite(act_in.mem_write),
         .address(act_in.address),
-        .write_data(act_in.write_data),
+        .S_data(act_in.write_data),
         // output
-        .read_data(act_data)
+        .data_out(act_data)
     );
     
     always #5 clk = ~clk; // Clock: 10ns period
@@ -40,7 +40,7 @@ module tb_dataMem();
     
     class wb_test;
         rand bit [31:0] rand_data;
-        rand bit [9:0]  rand_addr;
+        rand bit [31:0] rand_addr;
         rand bit        rand_mR, rand_mW;
         
         function void apply_inputs();
@@ -53,18 +53,18 @@ module tb_dataMem();
         task check();
             #1; // wait for the output to settle
             if (rand_mW == 1'b1) 
-                golden_mem[rand_addr] = rand_data;
+                golden_mem[rand_addr[11:2]] = rand_data;
             
             if (rand_mR == 1'b1 && rand_mW === 1'b0) 
-                exp_data = golden_mem[rand_addr];
+                exp_data = golden_mem[rand_addr[11:2]];
             else
                 exp_data = 32'b0;
                 
            // Compare actual and expected output 
            if (act_data === exp_data ) begin
-                if (rand_mW === 1'b1 && golden_mem[rand_addr] === rand_data && exp_data === 32'b0) 
+                if (rand_mW === 1'b1 && golden_mem[rand_addr[11:2]] === rand_data && exp_data === 32'b0) 
                     pass++;
-                else if (rand_mR === 1'b1 && rand_mW === 1'b0 && exp_data === golden_mem[rand_addr]) 
+                else if (rand_mR === 1'b1 && rand_mW === 1'b0 && exp_data === golden_mem[rand_addr[11:2]]) 
                     pass++;  
                 else if (exp_data === 32'b0) 
                     pass++;  
