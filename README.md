@@ -77,13 +77,7 @@ If you have suggestions, spot errors, or want to help improve documentation or d
 
 ## 🙏 Contributors & Early Supporters
 Thank you to everyone who has already shown interest and joined this project! Your enthusiasm and support mean a lot.
-- **Noridel Panadero-Marquez-Herron** [NoridelHerron](https://github.com/NoridelHerron)  
 - **S N Ravindra** (https://github.com/RAVINDRA0022)
-- **Pavan SV** (https://github.com/30383)
-- **Omar Abdelkareem**  (https://github.com/OmarAbdelkareem21) 
-- **Siva Naik Kurra** (https://github.com/sivanaik828) 
-- **Sivanandham Kuppusamy**  (https://github.com/sivanandham2003/)
-- **Tejeswara Reddy Dudyala** 
 
 ........
 
