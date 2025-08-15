@@ -14,6 +14,8 @@ module control_unit(
         output reg branch      // for branching
     );
     
+    `include "constant_pkg.vh"
+    
     always @(*) begin
         case (op)
             R_TYPE : begin

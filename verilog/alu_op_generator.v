@@ -22,10 +22,12 @@
 
 module alu_op_generator(
         input  [6:0] op, // opcode
-        input  [6:0] f3,
+        input  [2:0] f3,
         input  [6:0] f7,
         output reg [3:0] alu_op
     );
+    
+    `include "constant_pkg.vh"
     
    always @(*) begin
         case (alu_op)
