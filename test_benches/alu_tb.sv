@@ -51,7 +51,7 @@ module alu_tb();
         .V(actual_out.V)
     );
     
-    int total_tests = 100;
+    int total_tests = 1000000;
     // Keep track all the test and make sure it covers all the cases
     int pass     = 0, fail = 0, pass_default = 0, fail_default = 0;
     int pass_add = 0, pass_sub = 0, pass_xor = 0, pass_or = 0, pass_and = 0;
@@ -79,16 +79,16 @@ module alu_tb();
         
         task check();
             case (expected_in.alu_op)
-                ALU_ADD:  expected_out.result = expected_in.A + expected_in.B;
-                ALU_SUB:  expected_out.result = expected_in.A - expected_in.B;
-                ALU_XOR:  expected_out.result = expected_in.A ^ expected_in.B;
-                ALU_OR:   expected_out.result = expected_in.A | expected_in.B;
-                ALU_AND:  expected_out.result = expected_in.A & expected_in.B;
-                ALU_SLL:  expected_out.result = expected_in.A << expected_in.B[4:0];
-                ALU_SRL:  expected_out.result = expected_in.A >> expected_in.B[4:0];
-                ALU_SRA:  expected_out.result = $signed(expected_in.A) >>> expected_in.B[4:0];
-                ALU_SLT:  expected_out.result = ($signed(expected_in.A) < $signed(expected_in.B)) ? 32'b1 : 32'b0;
-                ALU_SLTU: expected_out.result = (expected_in.A < expected_in.B) ? 32'b1 : 32'b0;
+                ALU_ADD:  expected_out.result = rand_A + rand_B;
+                ALU_SUB:  expected_out.result = rand_A - rand_B;
+                ALU_XOR:  expected_out.result = rand_A ^ rand_B;
+                ALU_OR:   expected_out.result = rand_A | rand_B;
+                ALU_AND:  expected_out.result = rand_A & rand_B;
+                ALU_SLL:  expected_out.result = rand_A << rand_B[4:0];
+                ALU_SRL:  expected_out.result = rand_A >> rand_B[4:0];
+                ALU_SRA:  expected_out.result = $signed(rand_A) >>> rand_B[4:0];
+                ALU_SLT:  expected_out.result = ($signed(rand_A) < $signed(rand_B)) ? 32'b1 : 32'b0;
+                ALU_SLTU: expected_out.result = (rand_A < rand_B) ? 32'b1 : 32'b0;
                 default: expected_out.result  = 32'b0;
             endcase
             
@@ -110,7 +110,7 @@ module alu_tb();
             expected_out.N = (expected_out.result[31] == 1'b1) ? 1'b1 : 1'b0;
             expected_out.Z = (expected_out.result == 32'b0)    ? 1'b1 : 1'b0;
             
-            if ((actual_in === expected_in) && (actual_out === expected_out)) begin pass++;
+            if ((actual_in == expected_in) && (actual_out == expected_out)) begin pass++;
                 case (expected_in.alu_op)
                     ALU_ADD : pass_add++;
                     ALU_SUB : pass_sub++;
@@ -175,9 +175,9 @@ module alu_tb();
         repeat (total_tests) begin
             t = new();
             void'(t.randomize());
-            //@(posedge clk);
-            t.apply_inputs();  
-            @(posedge clk); 
+            @(posedge clk);
+            t.apply_inputs(); 
+            #1; 
             t.check();
         end
 
