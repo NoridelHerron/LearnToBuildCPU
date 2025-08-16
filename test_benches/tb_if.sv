@@ -21,7 +21,7 @@ module tb_if;
     logic [31:0] instr;
 
     // DUT instantiation
-    if_stage_v dut (
+    if_stage_s dut (
         .clk(clk),
         .reset(reset),
         .is_flush(is_flush),
