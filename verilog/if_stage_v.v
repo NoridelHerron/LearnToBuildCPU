@@ -1,11 +1,11 @@
-
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Module Name: IF_stage
 // Created by: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
+`include "constant_def.vh"
 
-module if_stage(
+module if_stage_v(
         input  wire        clk, reset, is_flush, is_stall,
         input  wire [31:0] branch_target,
         output reg         is_valid,     
@@ -13,12 +13,13 @@ module if_stage(
         output reg [31:0]  instr
     );
     
-    reg [31:0] pc_fetch, instr_fetched;
+    reg  [31:0] pc_fetch;
+    wire [31:0] instr_fetched;
     
     // Instantiate ROM
-    inst_mem MEM (
+    rom_v rom (
         .clk(clk),
-        .addr(pc_fetch),
+        .addr(pc_fetch[11:2]),
         .instr(instr_fetched)
     );
     
@@ -28,14 +29,17 @@ module if_stage(
             is_valid <= 1'b0;
             pc       <= 32'd0;
             instr    <= 32'd0;
-    
+        
+        // For branch and jump
         end else if (is_flush) begin
             pc_fetch   <= branch_target;
             is_valid   <= 1'b0;
             instr      <= 32'h00000013; // insert nop
-            pc            <= 32'd0;
+            pc         <= 32'd0;
     
+        // Normal flow
         end else if (!is_stall) begin
+            // Invalidate the initial memory delay
             if (pc_fetch == 32'd0)
                 is_valid <= 1'b0;
             else

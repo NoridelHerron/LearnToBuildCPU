@@ -12,7 +12,7 @@ module tb_rom;
     wire [31:0] instr;
 
     // Instantiate the ROM
-    rom_s uut (
+    rom_v uut (
         .clk(clk),
         .addr(addr),
         .instr(instr)
@@ -22,15 +22,14 @@ module tb_rom;
     always #5 clk = ~clk;
 
     integer i;
-
+    
     initial begin
 	$display("----Starting ROM test---");
         clk    = 0;
         addr   = 0;
         
-
         // Wait a bit before starting
-        #10;
+        @(posedge clk);
 
 		//Read first 10 instruction pairs from ROM
         for (i = 0; i < 1024; i = i + 1) begin     //Here Set address on clock edge

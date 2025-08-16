@@ -38,6 +38,8 @@ module tb_if;
 
     // Main stimulus
     initial begin
+        instr = 32'h00000013;
+        pc    = 32'd0;
         $display("Starting IF Stage Testbench...");
         reset = 1;
         is_flush = 0;
