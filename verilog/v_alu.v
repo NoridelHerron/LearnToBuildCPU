@@ -15,8 +15,19 @@ module v_alu (
     output reg C,
     output reg V
 );
-    `include "constant_pkg.vh"   // ALU_* op codes
-
+    // Alu operations
+    localparam [3:0]
+        ALU_ADD  = 4'h0,
+        ALU_SUB  = 4'h1,
+        ALU_XOR  = 4'h2,
+        ALU_OR   = 4'h3,
+        ALU_AND  = 4'h4,
+        ALU_SLL  = 4'h5,
+        ALU_SRL  = 4'h6,
+        ALU_SRA  = 4'h7,
+        ALU_SLT  = 4'h8,
+        ALU_SLTU = 4'h9;
+    
     // Precompute heavy paths once (fast carry chains on FPGA)
     wire [32:0] temp_add = {1'b0, A} + {1'b0, B};
     wire [32:0] temp_sub = {1'b0, A} - {1'b0, B};

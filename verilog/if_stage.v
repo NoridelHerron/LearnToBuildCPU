@@ -1,0 +1,50 @@
+
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Module Name: IF_stage
+// Created by: Noridel Herron
+//////////////////////////////////////////////////////////////////////////////////
+
+module if_stage(
+        input  wire        clk, reset, is_flush, is_stall,
+        input  wire [31:0] branch_target,
+        output reg         is_valid,     
+        output reg [31:0]  pc,
+        output reg [31:0]  instr
+    );
+    
+    reg [31:0] pc_fetch, instr_fetched;
+    
+    // Instantiate ROM
+    inst_mem MEM (
+        .clk(clk),
+        .addr(pc_fetch),
+        .instr(instr_fetched)
+    );
+    
+    always @(posedge clk) begin
+        if (reset) begin
+            pc_fetch <= 32'd0;
+            is_valid <= 1'b0;
+            pc       <= 32'd0;
+            instr    <= 32'd0;
+    
+        end else if (is_flush) begin
+            pc_fetch   <= branch_target;
+            is_valid   <= 1'b0;
+            instr      <= 32'h00000013; // insert nop
+            pc            <= 32'd0;
+    
+        end else if (!is_stall) begin
+            if (pc_fetch == 32'd0)
+                is_valid <= 1'b0;
+            else
+                is_valid <= 1'b1;
+    
+            pc_fetch <= pc_fetch + 32'd4;
+            pc       <= pc_fetch;
+            instr    <= instr_fetched;
+        end
+    end
+    
+endmodule
