@@ -12,7 +12,7 @@ module tb_rom;
     wire [31:0] instr;
 
     // Instantiate the ROM
-    rom_v uut (
+    rom_s uut (
         .clk(clk),
         .addr(addr),
         .instr(instr)
