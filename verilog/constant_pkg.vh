@@ -60,7 +60,7 @@ localparam [2:0]
     BNE  = 3'h1,
     BLT  = 3'h4,
     BGE  = 3'h5,
-    BLTE = 3'h6,
+    BLTU = 3'h6,
     BGEU = 3'h7;
 
 // Alu operations
