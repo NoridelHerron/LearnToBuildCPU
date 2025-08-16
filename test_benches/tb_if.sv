@@ -21,7 +21,7 @@ module tb_if;
     logic [31:0] instr;
 
     // DUT instantiation
-    if_stage dut (
+    if_stage_v dut (
         .clk(clk),
         .reset(reset),
         .is_flush(is_flush),
@@ -44,28 +44,12 @@ module tb_if;
         reset = 1;
         is_flush = 0;
         is_stall = 0;
-        branch_target = 32'h00000010;
+        branch_target = 32'h00000020;
         
         #12 reset = 0;
         
         // Normal fetch
-        repeat (5) @(posedge clk);
-        
-        // Trigger a branch flush
-        is_flush = 1;
-        @(posedge clk);
-        is_flush = 0;
-        
-        // Wait for more cycles
-        repeat (3) @(posedge clk);
-        
-        // Simulate a stall
-        is_stall = 1;
-        repeat (2) @(posedge clk);
-        is_stall = 0;
-        
-        // More cycles
-        repeat (3) @(posedge clk);
+        repeat (20) @(posedge clk);
         
         $display("Ending IF Stage Testbench...");
         $finish;

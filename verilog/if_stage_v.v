@@ -27,15 +27,7 @@ module if_stage_v(
         if (reset) begin
             pc_fetch <= 32'd0;
             is_valid <= 1'b0;
-            pc       <= 32'd0;
             instr    <= 32'd0;
-        
-        // For branch and jump
-        end else if (is_flush) begin
-            pc_fetch   <= branch_target;
-            is_valid   <= 1'b0;
-            instr      <= 32'h00000013; // insert nop
-            pc         <= 32'd0;
     
         // Normal flow
         end else if (!is_stall) begin
