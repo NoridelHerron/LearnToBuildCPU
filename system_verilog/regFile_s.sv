@@ -27,8 +27,8 @@ module regFile_s(
      end
      
      always_comb begin
-        readData1 = (rs1 == 0) ? 32'b0 : ((isWrite && rd == rs1) ? writeData : regs[rs1]);
-        readData2 = (rs2 == 0) ? 32'b0 : ((isWrite && rd == rs2) ? writeData : regs[rs2]);
+        readData1 = (rs1 == 0) ? 32'b0 : regs[rs1];
+        readData2 = (rs2 == 0) ? 32'b0 : regs[rs2];
     end
 
     

@@ -25,7 +25,7 @@ module tb_regFile();
     
 
     // Instantiate DUT
-    regFile_v dut (
+    regFile_s dut (
         .clk(clk),
         .isWrite(act_in.isWrite),       .rs1(act_in.rs1), 
         .rs2(act_in.rs2),               .rd(act_in.rd),
@@ -38,7 +38,7 @@ module tb_regFile();
     always #5 clk = ~clk;
 
     // Reference model
-    logic [31:0] golden_regs[31:0];
+    logic [31:0] golden_regs[0:31];
     
     
     integer total_tests = 1000000;
@@ -65,32 +65,34 @@ module tb_regFile();
             exp_in.rs1       = rand_rs1; 
             exp_in.rs2       = rand_rs2;
             
+            exp_out.readData1 = (exp_in.rs1 == 0) ? 32'b0 : golden_regs[exp_in.rs1];
+            exp_out.readData2 = (exp_in.rs2 == 0) ? 32'b0 : golden_regs[exp_in.rs2];
+            
             // Update reference model on posedge clk
             if (exp_in.isWrite && exp_in.rd != 0)
                 golden_regs[exp_in.rd] = exp_in.writeData;
+           
         endfunction
 
         task check();
-            #1; // wait for read combinational output
-            exp_out.readData1 = (rand_rs1 == 0) ? 32'b0 : ((we && rand_rd == rand_rs1) ? rand_data : golden_regs[rand_rs1]);
-            exp_out.readData2 = (rand_rs2 == 0) ? 32'b0 : ((we && rand_rd == rand_rs2) ? rand_data : golden_regs[rand_rs2]);
+            #1;
+            
             
             if (act_out === exp_out) begin
                 pass++;
                 if (act_in.isWrite && act_in.rd == 5'd0 && golden_regs[exp_in.rd] == 32'd0) pass_rd0++;
                 if (act_in.rs1 == 5'd0 && exp_out.readData1 == 32'd0) pass_rs10++;
                 if (act_in.rs2 == 5'd0 && exp_out.readData2 == 32'd0) pass_rs20++;
-                if (act_in.rs1 == act_in.rd && exp_out.readData1 == act_in.writeData) pass_rdrs1++;
-                if (act_in.rs2 == act_in.rd && exp_out.readData2 == act_in.writeData) pass_rdrs2++;
+                if (act_in.rs1 == act_in.rd && exp_out.readData1 == golden_regs[exp_in.rs1]) pass_rdrs1++;
+                if (act_in.rs2 == act_in.rd && exp_out.readData2 == golden_regs[exp_in.rs2]) pass_rdrs2++;
             end else begin
                 if (act_in === exp_in)
                     fail_in++;
-                else begin
-                    if (act_out.readData1 != exp_out.readData1) 
-                        fail_readData1++;
-                    else
-                        fail_readData2++;
-                end
+                if (act_out.readData1 != exp_out.readData1) 
+                    fail_readData1++;
+                else
+                    fail_readData2++;
+          
             end  
         endtask
     endclass
@@ -112,7 +114,6 @@ module tb_regFile();
             void'(txn.randomize());
             @(posedge clk);
             txn.apply();
-            //#1; 
             txn.check();
         end
 
@@ -127,12 +128,12 @@ module tb_regFile();
             $display(" %d out of %d tests failed.", fail, total_tests);
             if (fail_in != 0)
                 $display("inputs failed = %d", fail_in);
-            else begin
-                if (fail_readData1 != 0)
-                    $display("rs1 value failed (%d)", fail_readData1);
-                else if (fail_readData2 != 0)
-                    $display("rs2 value failed (%d)", fail_readData2);
-            end
+            
+            if (fail_readData1 != 0)
+                $display("rs1 value failed : %d", fail_readData1);
+            else if (fail_readData2 != 0)
+                $display("rs2 value failed : %d", fail_readData2);
+          
         end
         $stop;
     end
