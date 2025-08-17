@@ -36,9 +36,7 @@ begin
     begin
         if reset = '1' then
             pc_fetch         <= (others => '0');
-            pc_current       <= pc_fetch; 
             temp_is_valid    <= '0';
-            temp_pc          <= (others => '0');
             temp_instruction <= (others => '0');
             
         elsif rising_edge(clk) then
@@ -67,6 +65,7 @@ begin
                 temp_instruction <= instr_reg; 
              end if;
         end if;
+        temp_pc <= pc_fetch;
     end process;
 
     -- Instantiate instruction memory

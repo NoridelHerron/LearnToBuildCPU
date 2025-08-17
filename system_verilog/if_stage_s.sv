@@ -23,7 +23,7 @@ module if_stage_s(
         .instr(instr_fetched)
     );
     
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
         if (reset) begin
             pc_fetch <= 32'd0;
             is_valid <= 1'b0;

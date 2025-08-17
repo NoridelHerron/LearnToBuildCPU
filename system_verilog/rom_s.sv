@@ -150,7 +150,7 @@ module rom_s(
     end
     
     // Assign output
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
         instr <= rom[addr];
     end
     
