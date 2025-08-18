@@ -1,8 +1,5 @@
 ----------------------------------------------
 -- Noridel Herron
--- ECE 4250 VHDL & PROGRAMMABLE LOGIC DESIGN
--- PROJECT CALCULATOR
--- Instructor: Dr.Khaza Hoque
 ---------------------------------------------
 
 library IEEE;
