@@ -31,7 +31,7 @@ module tb_hdu();
     hdu_out act_out, exp_out;
     
     // Instantiate DUT
-    hdu_s dut (
+    hdu_v dut (
         .id_rs1(act_in.id_rs1),                 .id_rs2(act_in.id_rs2),
         .idex_rs1(act_in.idex_rs1),             .idex_rs2(act_in.idex_rs2), 
         .idex_rd(act_in.idex_rd),               .exmem_rd(act_in.exmem_rd), 
@@ -111,7 +111,7 @@ module tb_hdu();
         
         task check();
                  
-            if (act_in === exp_in) begin
+            if (act_in === exp_in && act_out === exp_out) begin
                 pass++;
                 if (exp_out.forwA == 2'b00) passA_none++;
                 if (exp_out.forwA == 2'b01) passA_exmem++;

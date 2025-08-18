@@ -3,7 +3,7 @@
 // Module Name: Control Unit
 // Name: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
-
+`include "constant_pkg.vh"
 
 module control_unit(
         input  [6:0] op,       // opcode
@@ -14,11 +14,9 @@ module control_unit(
         output reg branch      // for branching
     );
     
-    `include "constant_pkg.vh"
-    
     always @(*) begin
         case (op)
-            R_TYPE : begin
+            `R_TYPE : begin
                 mem_read  = 1'b0;
                 mem_write = 1'b0;
                 reg_write = 1'b1;
@@ -26,7 +24,7 @@ module control_unit(
                 branch    = 1'b0;
             end
             
-            I_IMM : begin
+            `I_IMM : begin
                 mem_read  = 1'b0;
                 mem_write = 1'b0;
                 reg_write = 1'b1;
@@ -34,7 +32,7 @@ module control_unit(
                 branch    = 1'b0;
             end
             
-            I_LOAD : begin
+            `I_LOAD : begin
                 mem_read  = 1'b1;
                 mem_write = 1'b0;
                 reg_write = 1'b1;
@@ -42,7 +40,7 @@ module control_unit(
                 branch    = 1'b0;
             end
             
-            S_TYPE : begin
+            `S_TYPE : begin
                 mem_read  = 1'b0;
                 mem_write = 1'b1;
                 reg_write = 1'b0;
@@ -50,7 +48,7 @@ module control_unit(
                 branch    = 1'b0;
             end
             
-            B_TYPE : begin
+            `B_TYPE : begin
                 mem_read  = 1'b0;
                 mem_write = 1'b0;
                 reg_write = 1'b0;
@@ -58,7 +56,7 @@ module control_unit(
                 branch    = 1'b1;
             end
             
-            J_JAL : begin
+            `J_JAL : begin
                 mem_read  = 1'b0;
                 mem_write = 1'b0;
                 reg_write = 1'b1;
@@ -66,7 +64,7 @@ module control_unit(
                 branch    = 1'b0;
             end
             
-            I_JALR : begin
+            `I_JALR : begin
                 mem_read  = 1'b0;
                 mem_write = 1'b0;
                 reg_write = 1'b1;
@@ -74,7 +72,7 @@ module control_unit(
                 branch    = 1'b0;
             end
             
-            U_LUI : begin
+            `U_LUI : begin
                 mem_read  = 1'b0;
                 mem_write = 1'b0;
                 reg_write = 1'b1;
@@ -82,7 +80,7 @@ module control_unit(
                 branch    = 1'b0;
             end
             
-            U_AUIPC : begin
+            `U_AUIPC : begin
                 mem_read  = 1'b0;
                 mem_write = 1'b0;
                 reg_write = 1'b1;
