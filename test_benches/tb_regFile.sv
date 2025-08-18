@@ -76,8 +76,6 @@ module tb_regFile();
 
         task check();
             #1;
-            
-            
             if (act_out === exp_out) begin
                 pass++;
                 if (act_in.isWrite && act_in.rd == 5'd0 && golden_regs[exp_in.rd] == 32'd0) pass_rd0++;
