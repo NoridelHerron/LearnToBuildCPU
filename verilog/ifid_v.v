@@ -7,7 +7,7 @@
 
 module ifid(
         input  wire        clk, reset, is_flush, is_stall,
-        input  wire [31:0] is_valid_in,     
+        input  wire        is_valid_in,     
         input  wire [31:0] pc_in,
         input  wire [31:0] instr_in,
         output reg         is_valid_out,     

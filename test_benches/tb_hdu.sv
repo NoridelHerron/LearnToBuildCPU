@@ -122,13 +122,13 @@ module tb_hdu();
                 if (exp_out.stall == 1'b1)  pass_stall++;
             end else begin
                 fail++;
-                if (exp_out.forwA == 2'b00) failA_none++;
-                if (exp_out.forwA == 2'b01) failA_exmem++;
-                if (exp_out.forwA == 2'b10) failA_memwb++;
-                if (exp_out.forwB == 2'b00) failB_none++;
-                if (exp_out.forwB == 2'b01) failB_exmem++;
-                if (exp_out.forwB == 2'b10) failB_memwb++;
-                if (exp_out.stall == 1'b1)  fail_stall++;
+                if (exp_out.forwA != act_out.forwA && exp_out.forwA == 2'b00) failA_none++;
+                if (exp_out.forwA != act_out.forwA && exp_out.forwA == 2'b01) failA_exmem++;
+                if (exp_out.forwA != act_out.forwA && exp_out.forwA == 2'b10) failA_memwb++;
+                if (exp_out.forwB != act_out.forwB && exp_out.forwB == 2'b00) failB_none++;
+                if (exp_out.forwB != act_out.forwB && exp_out.forwB == 2'b01) failB_exmem++;
+                if (exp_out.forwB != act_out.forwB && exp_out.forwB == 2'b10) failB_memwb++;
+                if (exp_out.stall != act_out.stall) fail_stall++;
             end
         endtask
     endclass 
