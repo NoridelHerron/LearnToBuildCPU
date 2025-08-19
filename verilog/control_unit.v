@@ -3,9 +3,9 @@
 // Module Name: Control Unit
 // Name: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
-`include "constant_pkg.vh"
+`include "constant_def.vh"
 
-module control_unit(
+module control_unit_v(
         input  [6:0] op,       // opcode
         output reg mem_read,   // read data from the memory
         output reg mem_write,  // write data to the memory
