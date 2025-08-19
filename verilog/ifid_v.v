@@ -5,7 +5,7 @@
 // Name: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
 
-module ifid(
+module ifid_v(
         input  wire        clk, reset, is_flush, is_stall,
         input  wire        is_valid_in,     
         input  wire [31:0] pc_in,
@@ -14,6 +14,12 @@ module ifid(
         output reg  [31:0] pc_out,
         output reg  [31:0] instr_out
     );
+    
+    initial begin
+        pc_out       = 32'd0;
+        is_valid_out = 1'b0;
+        instr_out    = 32'd0;
+    end
     
     always @(posedge clk) begin
         if (reset) begin
