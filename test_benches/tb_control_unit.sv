@@ -22,7 +22,7 @@ module tb_control_unit();
     cntrl_out   act_out, exp_out;
     
     // Instantiate DUT
-    control_unit_v dut (
+    control_unit_s dut (
         .op(act_in),                 
         .mem_read(act_out.mem_read),          
         .mem_write(act_out.mem_write),         

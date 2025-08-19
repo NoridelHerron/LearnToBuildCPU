@@ -23,7 +23,7 @@ module tb_aluOp_gen();
     logic [3:0] act_out, exp_out;
     
     // Instantiate DUT
-    alu_op_generator_v dut (
+    aluOp_gen_s dut (
         .op(act_in.op),                 
         .f3(act_in.f3),          
         .f7(act_in.f7),         
