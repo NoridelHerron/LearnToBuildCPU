@@ -153,29 +153,29 @@ module tb_aluOp_gen();
                 `R_TYPE   : begin
                     case (exp_in.f3)
                         `F3_ADD_SUB :begin
-                        case (exp_in.f7)
-                            `F7_ADD  : exp_out = `ALU_ADD;
-                            `F7_SUB  : exp_out = `ALU_SUB;
-                            default  : exp_out = `ALU_ADD; // force to 0
-                        endcase
-                    end
+                            case (exp_in.f7)
+                                `F7_ADD  : exp_out = `ALU_ADD;
+                                `F7_SUB  : exp_out = `ALU_SUB;
+                                default  : exp_out = `ALU_ADD; // force to 0
+                            endcase
+                        end
                     
-                    `F3_SRL_SRA :begin
-                        case (exp_in.f7)
-                            `F7_SRL  : exp_out = `ALU_SRL;
-                            `F7_SRA  : exp_out = `ALU_SRL;
-                            default  : exp_out = `ALU_ADD; // force to 0
-                        endcase
-                    end
+                        `F3_SRL_SRA :begin
+                            case (exp_in.f7)
+                                `F7_SRL  : exp_out = `ALU_SRL;
+                                `F7_SRA  : exp_out = `ALU_SRL;
+                                default  : exp_out = `ALU_ADD; // force to 0
+                            endcase
+                        end
                     
-                    `F3_SLT  : exp_out = `ALU_SLT;
-                    `F3_SLTU : exp_out = `ALU_SLTU;
-                    `F3_XOR  : exp_out = `ALU_XOR;
-                    `F3_OR   : exp_out = `ALU_OR;
-                    `F3_AND  : exp_out = `ALU_AND;
-                    `F3_SLL  : exp_out = `ALU_SLL;
-                    default  : exp_out = `ALU_ADD; // force to 0
-                    endcase
+                        `F3_SLT  : exp_out = `ALU_SLT;
+                        `F3_SLTU : exp_out = `ALU_SLTU;
+                        `F3_XOR  : exp_out = `ALU_XOR;
+                        `F3_OR   : exp_out = `ALU_OR;
+                        `F3_AND  : exp_out = `ALU_AND;
+                        `F3_SLL  : exp_out = `ALU_SLL;
+                        default  : exp_out = `ALU_ADD; // force to 0
+                        endcase
                 end
                 
                 `I_IMM    : begin

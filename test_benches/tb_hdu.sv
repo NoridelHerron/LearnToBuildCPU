@@ -41,49 +41,6 @@ module tb_hdu();
         .stall(act_out.stall)
     );
     
-    always @(posedge clk) begin   
-        act_in.idex_rs1         <= act_in.id_rs1;
-        act_in.idex_rs2         <= act_in.id_rs2;
-        act_in.idex_rd          <= act_in.id_rd;
-        act_in.idex_memRead     <= act_in.id_memRead;
-        act_in.idex_regWrite    <= act_in.id_regWrite;
-        act_in.exmem_rd         <= act_in.idex_rd;
-        act_in.exmem_regWrite   <= act_in.idex_regWrite;
-        act_in.memwb_rd         <= act_in.exmem_rd;
-        act_in.memwb_regWrite   <= act_in.exmem_regWrite;
-        
-        exp_in.idex_rs1         <= exp_in.id_rs1;
-        exp_in.idex_rs2         <= exp_in.id_rs2;
-        exp_in.idex_rd          <= exp_in.id_rd;
-        exp_in.idex_memRead     <= exp_in.id_memRead;
-        exp_in.idex_regWrite    <= exp_in.id_regWrite;
-        exp_in.exmem_rd         <= exp_in.idex_rd;
-        exp_in.exmem_regWrite   <= exp_in.idex_regWrite;
-        exp_in.memwb_rd         <= exp_in.exmem_rd;
-        exp_in.memwb_regWrite   <= exp_in.exmem_regWrite;
-     end
-     
-     always @(*) begin
-        if (exp_in.exmem_regWrite && exp_in.exmem_rd != 5'd0 && exp_in.exmem_rd == exp_in.idex_rs1)
-                exp_out.forwA = 2'b01;
-            else if (exp_in.memwb_regWrite && exp_in.memwb_rd != 5'd0 && exp_in.memwb_rd == exp_in.idex_rs1)
-                exp_out.forwA = 2'b10;
-            else
-                 exp_out.forwA = 2'b00;
-                 
-            if (exp_in.exmem_regWrite && exp_in.exmem_rd != 5'd0 && exp_in.exmem_rd == exp_in.idex_rs2)
-                exp_out.forwB = 2'b01;
-            else if (exp_in.memwb_regWrite && exp_in.memwb_rd != 5'd0 && exp_in.memwb_rd == exp_in.idex_rs2)
-                exp_out.forwB = 2'b10;
-            else
-                 exp_out.forwB = 2'b00;
-                 
-            if (exp_in.idex_memRead && (exp_in.idex_rd == exp_in.id_rs1 || exp_in.idex_rd == exp_in.id_rs2)) 
-                exp_out.stall = 1'b1; 
-            else
-                exp_out.stall = 1'b0;     
-     end
-    
     int total_tests = 1000000;
     int pass = 0, passA_exmem = 0, passA_memwb = 0, passA_none = 0, passB_exmem = 0, passB_memwb = 0, passB_none = 0, pass_stall = 0;
     int fail = 0, failA_exmem = 0, failA_memwb = 0, failA_none = 0, failB_exmem = 0, failB_memwb = 0, failB_none = 0, fail_stall = 0;
@@ -149,7 +106,46 @@ module tb_hdu();
             @(posedge clk);
             txn.apply_actual();
             txn.apply_expected();
+            act_in.idex_rs1         <= act_in.id_rs1;
+            act_in.idex_rs2         <= act_in.id_rs2;
+            act_in.idex_rd          <= act_in.id_rd;
+            act_in.idex_memRead     <= act_in.id_memRead;
+            act_in.idex_regWrite    <= act_in.id_regWrite;
+            act_in.exmem_rd         <= act_in.idex_rd;
+            act_in.exmem_regWrite   <= act_in.idex_regWrite;
+            act_in.memwb_rd         <= act_in.exmem_rd;
+            act_in.memwb_regWrite   <= act_in.exmem_regWrite;
+            
+            exp_in.idex_rs1         <= exp_in.id_rs1;
+            exp_in.idex_rs2         <= exp_in.id_rs2;
+            exp_in.idex_rd          <= exp_in.id_rd;
+            exp_in.idex_memRead     <= exp_in.id_memRead;
+            exp_in.idex_regWrite    <= exp_in.id_regWrite;
+            exp_in.exmem_rd         <= exp_in.idex_rd;
+            exp_in.exmem_regWrite   <= exp_in.idex_regWrite;
+            exp_in.memwb_rd         <= exp_in.exmem_rd;
+            exp_in.memwb_regWrite   <= exp_in.exmem_regWrite;
+            
             #1;
+            if (exp_in.exmem_regWrite && exp_in.exmem_rd != 5'd0 && exp_in.exmem_rd == exp_in.idex_rs1)
+                exp_out.forwA = 2'b01;
+            else if (exp_in.memwb_regWrite && exp_in.memwb_rd != 5'd0 && exp_in.memwb_rd == exp_in.idex_rs1)
+                exp_out.forwA = 2'b10;
+            else
+                 exp_out.forwA = 2'b00;
+                 
+            if (exp_in.exmem_regWrite && exp_in.exmem_rd != 5'd0 && exp_in.exmem_rd == exp_in.idex_rs2)
+                exp_out.forwB = 2'b01;
+            else if (exp_in.memwb_regWrite && exp_in.memwb_rd != 5'd0 && exp_in.memwb_rd == exp_in.idex_rs2)
+                exp_out.forwB = 2'b10;
+            else
+                 exp_out.forwB = 2'b00;
+                 
+            if (exp_in.idex_memRead && exp_in.idex_rd != 5'd0 && (exp_in.idex_rd == exp_in.id_rs1 || exp_in.idex_rd == exp_in.id_rs2)) 
+                exp_out.stall = 1'b1; 
+            else
+                exp_out.stall = 1'b0;     
+                
             txn.check();
         end
 

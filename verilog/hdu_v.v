@@ -29,7 +29,7 @@ module hdu_v (
         else
             forwB = 2'b00;
         
-        if (idex_memRead && (idex_rd == id_rs1 || idex_rd == id_rs2))
+        if (idex_memRead && idex_rd != 5'd0 && (idex_rd == id_rs1 || idex_rd == id_rs2))
             stall = 1'b1;
         else
             stall = 1'b0;
