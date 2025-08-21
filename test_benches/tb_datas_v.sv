@@ -21,7 +21,7 @@ module tb_datas_v();
     data_in  act_in, exp_in;
     data_out act_out, exp_out;
     
-    datas_v uut(
+    data_s uut(
         .op(act_in.op),
         .imm12(act_in.imm12),
         .reg1_data(act_in.reg1_data), .reg2_data(act_in.reg2_data),
