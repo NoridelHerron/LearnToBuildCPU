@@ -14,7 +14,7 @@ int main() {
     srand(time(NULL));  // Seed random generator
      unsigned int rd_triggerStall = 0;
 
-    // Example: Generate 10 random RISC-V instructions
+    // Generate 1024 random RISC-V instructions
     for (int i = 0; i < 1024; i++) {
         int opcode_type = rand() % 6;
         int isLoad = 0;
@@ -23,16 +23,16 @@ int main() {
         unsigned int rd = rand() % 32;
         unsigned int rs1 = rand() % 32;
         unsigned int rs2 = rand() % 32;
-        unsigned int funct3, funct7, imm;
+        unsigned int funct3, funct7, imm; 
 
         switch (opcode_type) {
-            case 0: // R-TYPE: add, sub, and, etc.
+            case 0: //R_Type
                 funct3 = (rand() % 8);
                 if (funct3 == 0 || funct3 == 5)
                     funct7 = (rand() % 2) ? F7_ADD : F7_SUB;
                 else
                     funct7 = 0;
-
+                // Help trigger stall
                 if (isLoad == 1)
                     rd = rd_triggerStall;
                 
@@ -46,7 +46,7 @@ int main() {
                     funct7 = (rand() % 2) ? F7_SRL : F7_SRA;
                     imm = ((funct7 << 5) | (rand() % 8)*4) & 0xFFF;  
                 } else 
-                    imm = (rand() % 1024)*4 & 0xFFF;
+                    imm = (rand() % 1024)*4 & 0xFFF; 
 
                 if (isLoad == 1)
                     rd = rd_triggerStall;  
@@ -54,7 +54,7 @@ int main() {
                 instr = (imm << 20) | (rs1 << 15) | (funct3 << 12) |
                         (rd << 7) | I_IMM;
                 break;
-
+            // immediate value must be divisible by 4 to make sure it is word aligned
             case 2: // I-LOAD: lw
                 funct3 = F3_LW;
                 isLoad = 1;
@@ -71,12 +71,12 @@ int main() {
                         (funct3 << 12) | ((imm & 0x1F) << 7) | S_TYPE;
                 break;
 
-            case 4: // 
+            case 4: // B_Type
                 funct3 = rand() % 8;
                 if (funct3 == 2 || funct3 == 3)
                     funct3 = (rand() % 2) ? F3_BEQ : F3_BNE;
 
-                imm = (rand() % 1024)*4 & 0xFFF;
+                imm = (rand() % 1024)*4 & 0xFFF;  
                 instr = ((imm >> 12) << 31) |
                         (((imm >> 5) & 0x3F) << 25) |
                         (rs2 << 20) | (rs1 << 15) |
