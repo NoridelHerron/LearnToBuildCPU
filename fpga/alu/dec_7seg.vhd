@@ -5,7 +5,7 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.all;
 
--- Hexadecimal to 7 Segment Decoder for LED Display
+-- decimal to 7 Segment Decoder for LED Display
 
 ENTITY dec_7seg IS
 	PORT( 
@@ -20,9 +20,8 @@ SIGNAL segment_data : std_logic_VECTOR(6 DOWNTO 0);
 BEGIN
 
 	PROCESS  (base_10)
-		-- HEX to 7 Segment Decoder for LED Display	
+		-- decimal to 7 Segment Decoder for LED Display	
 	BEGIN
-		-- Hex-digit is the four bit binary value to display in hexadecimal
       CASE base_10 IS
          WHEN "0000" =>
              segment_data <= "1111110";
@@ -54,8 +53,6 @@ BEGIN
              segment_data <= "1001111";
       END CASE;
 	END PROCESS;
-		-- extract segment data bits and invert
-		-- LED driver circuit is inverted
 	segment <= 	NOT segment_data;
 	
 END structure;
