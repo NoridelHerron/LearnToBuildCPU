@@ -55,7 +55,7 @@ This project includes a synthesizable VHDL version that runs on an actual FPGA b
 - **Languages:** VHDL, Verilog, SystemVerilog
 - **Simulators:** ModelSim, GHDL, Icarus Verilog
 - **Design Tools:** Vivado (for FPGA integration)
-- **Version Control:** Git + GitHub
+- **Version Control:** GitHub
 
 ---
 
@@ -63,15 +63,15 @@ This project includes a synthesizable VHDL version that runs on an actual FPGA b
 
 If you’re learning or building something similar, feel free to open an issue, share insights, or just say hello. 
 I also welcome:
-    - Suggestions for improving the documentation or design clarity
-    - Additions in a **separate folder** that explore new instructions, caching, or structural changes
-    - Your personal forks if you translate this to Verilog/SystemVerilog or add GUI/visual tools
+- Suggestions for improving the documentation or design clarity
+- Additions in a **separate folder** that explore new instructions, caching, or structural changes
+- Your personal forks if you translate this to Verilog/SystemVerilog or add GUI/visual tools
 
 ⚠️ **NOTE**: I want to preserve this main codebase as a teaching platform — so please submit feature changes or refactors in a clearly separate directory to avoid overwriting the core pipeline.
 
 --- 
 
-## 🙏 Contributors
+## 🙏 Contributor
 Thank you to **S N Ravindra** (https://github.com/RAVINDRA0022) for the alu (under extra folder)
 
 ---
