@@ -1,51 +1,52 @@
-## Welcome to the LearnToBuildCPU project!
-The primary purpose of this project is to make learning computer architecture easier and more accessible for students, hobbyists, and aspiring engineers. I want this to be the kind of resource I wish I had when I first started.
+## Welcome to LearnToBuildCPU 🚀
 
-### 🧠 What Is This Project?
+This project is more than just a pipelined CPU — it’s a guided journey through the inner workings of computer architecture, designed for learners who want to **build**, **break**, **debug**, and **extend** real hardware logic.
 
-This is a modular, educational RISC-V CPU project built using VHDL and Verilog. It's designed to teach computer architecture concepts through hands-on development, clean structure, and rich documentation.
-
-This project is designed to be:
-- As basic and readable as possible – so even beginners can follow along.
-- Modular and well-documented – each component is explained, with clear roles and signal flows.
-- Built in multiple HDLs – such as VHDL and Verilog/SystemVerilog, so learners can compare and learn from different styles and languages.
-- Expandable for deeper learning – while the core is kept simple, there are opportunities to learn more advanced topics such as:
-    - Writing wrappers
-    - Using records/structs
-    - Building simulation testbenches
-    - Understanding control signals, hazard detection, and forwarding
-
-I know how it feels to work in the dark, trying to build something you don’t fully understand. That’s why everything in this project is being documented carefully—so as you build, you also understand.
+I created this as the resource I wish I had when I first started — something hands-on, with clear structure but open-ended enough to explore freely. The design is verified with randomized testbenches (10K–1M+ cases), waveform snapshots, and summaries to help you stay confident while experimenting.
 
 ---
 
-## 📋 What I’ll Provide
-- A detailed list of input/output signals for each module to guide the refactor
-- Clear credit for contributors in the repo, documentation, and any related blog posts
+## 🧠 Design Philosophy & Exploration Guide
+
+I could have minimized this code more — and I might still do that in the future — but for now, I intentionally kept it readable, diverse, and modular to serve as a learning platform.
+
+Not everything here is "perfectly" optimized. Some parts use shared constants from a centralized file, while others declare values locally. Some modules are compact and reusable, while others are more expanded version. This is all intentional — I wanted to leave room for you to explore, refactor, and improve.
+
+This CPU isn’t just a finished project — it’s a **sandbox for learners**. If you’re writing your own pipeline or just starting with HDL, this code gives you a playground with safety rails.
+
+### 🔍 Ways You Can Explore This CPU
+
+- ✅ **Refactor & Minimize**
+    - Replace longer code with `struct` in SystemVerilog or `record` types in VHDL
+    - Consolidate locally declared constants into global shared files
+    - Create reusable modules where repetition exists
+
+- ✅ **Modify Without Fear**
+    - Self-checking testbenches verify functionality with thousands (sometimes millions) of test cases
+    - These act as guardrails — so you’ll know if your changes break something
+
+- ✅ **Visual Reference Included**
+    - Waveform screenshots and test result summaries are provided
+    - You’ll know what behavior to expect and have visual proof of correctness
+
+- ✅ **Mixed-Language Design**
+    - Includes VHDL wrappers for Verilog modules, demonstrating interoperability
+    - Great if you want to explore cross-language simulation or synthesis
+
+- ✅ **Explore Design Choices**
+    - Some control signals are bundled together, others passed separately — optimize or restructure them
+    - Signal naming and modularity vary across files so you can practice unifying or improving them
+
+- ✅ **Extend and Scale**
+    - Add missing instructions (e.g., `AUIPC`, `LUI`, `MUL/DIV`)
+    - Introduce instruction/data caches or branch prediction
+    - Design and test a custom debugging unit, interrupt handler, or hazard visualizer
 
 ---
 
-## 🙌 Collaboration and Support
-- I’m currently preparing a list of tasks that you can choose from based on your interests and experience level. Each contributor will get a dedicated branch (named after your first name) so you can work independently while keeping things organized.
-- We're also exploring support for both VHDL and Verilog versions of the design—so feel free to contribute in the language you're most comfortable with.
-- If you have your own ideas on how to contribute, I’d love to hear them. Let’s learn and build together. 🚀
----
+🧵 **Synthesis-Ready VHDL Version Included**
 
-## 🧪 Testbench Plans
-Once I finish my current superscalar project, I will:
-- Write a SystemVerilog/VHDL testbench with assertions to ensure all contributor-built modules are rock solid
-- Inject bugs to demonstrate debugging techniques
-- Add a TCL + waveform debugging guide
-- Possibly publish a tutorial or blog post for learners to follow
-
-**NOTE**: I've written testbenches for the ALU and decoder modules. Feel free to use them—just make sure to update the DUT instance name if yours is different. You may also need to adjust the input and output connections if your port order is not the same. And of course, feel free to modify the testbenches as needed.
-
----
-
-## 💡 Personal Vision & Acknowledgement
-I’m aware that this project currently has several flaws and areas that need improvement. As I continue refactoring and connecting the modules properly according to the RISC-V standard, my personal goal is to rebuild the design following more standard and widely accepted practices—not just based on observation or intuition.
-
-This project is also a learning journey for me. I'm actively seeking feedback and input from more experienced developers to ensure that the architecture and implementation reflect best practices. By doing this, I hope to both deepen my own understanding and make the project more reliable, educational, and transparent for others who want to learn.
+This project includes a synthesizable VHDL version that runs on an actual FPGA board. While I used VHDL for my implementation, the same concepts can be translated into Verilog or SystemVerilog — and if you choose to do it that way, I’d love to hear about it!
 
 ---
 
@@ -56,28 +57,31 @@ This project is also a learning journey for me. I'm actively seeking feedback an
 - **Design Tools:** Vivado (for FPGA integration)
 - **Version Control:** Git + GitHub
 
---- 
-
-If this sounds exciting or meaningful to you and you’d like to be listed as a contributor, just reach out. Let’s build something that helps the next generation of CPU designers learn with clarity and confidence.
-
 ---
 
-## 🔧 Note to All Contributors
-I’m currently preparing a list of tasks you can choose from based on your interests and skill level. Each contributor will have a branch named after their first name, so everyone can work independently while keeping things organized.
+## 💬 Feedback & Contribution Guidelines
 
-If you have your own idea for how you’d like to contribute—feel free to propose it! This is a collaborative, learner-focused space.
+If you’re learning or building something similar, feel free to open an issue, share insights, or just say hello. 
+I also welcome:
+    - Suggestions for improving the documentation or design clarity
+    - Additions in a **separate folder** that explore new instructions, caching, or structural changes
+    - Your personal forks if you translate this to Verilog/SystemVerilog or add GUI/visual tools
 
----
-
-## 💬 Feedback Welcome
-
-If you have suggestions, spot errors, or want to help improve documentation or design, feel free to open an issue or start a discussion. This is a learning-focused space, and I welcome all constructive input.
+⚠️ **NOTE**: I want to preserve this main codebase as a teaching platform — so please submit feature changes or refactors in a clearly separate directory to avoid overwriting the core pipeline.
 
 --- 
 
-## 🙏 Contributors & Early Supporters
-Thank you to everyone who has already shown interest and joined this project! Your enthusiasm and support mean a lot.
-- **S N Ravindra** (https://github.com/RAVINDRA0022)
+## 🙏 Contributors
+Thank you to **S N Ravindra** (https://github.com/RAVINDRA0022) for the alu (under extra folder)
 
-........
+---
+
+## 👤 Author
+**Noridel Herron**  
+Senior in Computer Engineering – University of Missouri  
+Graduation date: May 2026 | Available to work: July 2026 or earlier
+
+Gmail  : noridel.herron@gmail.com  
+Linkedn: (https://www.linkedin.com/in/noridel-h-5a5534156/)
+GitHub : [@NoridelHerron](https://github.com/NoridelHerron)
 
