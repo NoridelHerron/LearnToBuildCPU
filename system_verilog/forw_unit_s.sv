@@ -1,21 +1,20 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Create Date: 08/23/2025 06:22:47 AM
 // Module Name: forw_unit
 // Created by: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
 `include "constant_def.vh"
 
-module forw_unit_v(
-        input             isForw_ON,
-        input      [6:0]  op,
-        input      [31:0] exmem_result, memwb_result,
-        input      [1:0]  forwA, forwB,
-        input      [31:0] data1, data2, s_data,
-        output reg [31:0] operand1, operand2, sData
+module forw_unit_s(
+        input  logic      isForw_ON,
+        input  logic [6:0]  op,
+        input  logic [31:0] exmem_result, memwb_result,
+        input  logic [1:0]  forwA, forwB,
+        input  logic [31:0] data1, data2, s_data,
+        output logic [31:0] operand1, operand2, sData
     );
     
-    always @(*) begin
+    always_comb begin
         if (isForw_ON) begin
             case (forwA)
                 2'b00   : operand1 = data1;
