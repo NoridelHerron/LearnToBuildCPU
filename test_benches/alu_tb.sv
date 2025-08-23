@@ -5,24 +5,12 @@
 // Name: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
+`include "constant_def.vh"
 
 module alu_tb();
     logic clk = 0;
     always #5 clk = ~clk; // Clock: 10ns period
     
-    // Alu operations
-    localparam [3:0]
-        ALU_ADD  = 4'h0,
-        ALU_SUB  = 4'h1,
-        ALU_XOR  = 4'h2,
-        ALU_OR   = 4'h3,
-        ALU_AND  = 4'h4,
-        ALU_SLL  = 4'h5,
-        ALU_SRL  = 4'h6,
-        ALU_SRA  = 4'h7,
-        ALU_SLT  = 4'h8,
-        ALU_SLTU = 4'h9;
-        
     typedef struct packed {
         logic [31:0] A;
         logic [31:0] B;
@@ -79,21 +67,21 @@ module alu_tb();
         
         task check();
             case (expected_in.alu_op)
-                ALU_ADD:  expected_out.result = rand_A + rand_B;
-                ALU_SUB:  expected_out.result = rand_A - rand_B;
-                ALU_XOR:  expected_out.result = rand_A ^ rand_B;
-                ALU_OR:   expected_out.result = rand_A | rand_B;
-                ALU_AND:  expected_out.result = rand_A & rand_B;
-                ALU_SLL:  expected_out.result = rand_A << rand_B[4:0];
-                ALU_SRL:  expected_out.result = rand_A >> rand_B[4:0];
-                ALU_SRA:  expected_out.result = $signed(rand_A) >>> rand_B[4:0];
-                ALU_SLT:  expected_out.result = ($signed(rand_A) < $signed(rand_B)) ? 32'b1 : 32'b0;
-                ALU_SLTU: expected_out.result = (rand_A < rand_B) ? 32'b1 : 32'b0;
-                default: expected_out.result  = 32'b0;
+                `ALU_ADD:  expected_out.result = rand_A + rand_B;
+                `ALU_SUB:  expected_out.result = rand_A - rand_B;
+                `ALU_XOR:  expected_out.result = rand_A ^ rand_B;
+                `ALU_OR:   expected_out.result = rand_A | rand_B;
+                `ALU_AND:  expected_out.result = rand_A & rand_B;
+                `ALU_SLL:  expected_out.result = rand_A << rand_B[4:0];
+                `ALU_SRL:  expected_out.result = rand_A >> rand_B[4:0];
+                `ALU_SRA:  expected_out.result = $signed(rand_A) >>> rand_B[4:0];
+                `ALU_SLT:  expected_out.result = ($signed(rand_A) < $signed(rand_B)) ? 32'b1 : 32'b0;
+                `ALU_SLTU: expected_out.result = (rand_A < rand_B) ? 32'b1 : 32'b0;
+                default: expected_out.result   = 32'b0;
             endcase
             
-            if (expected_in.alu_op == ALU_ADD || expected_in.alu_op == ALU_SUB) begin
-                if (expected_in.alu_op == ALU_ADD) begin
+            if (expected_in.alu_op == `ALU_ADD || expected_in.alu_op == `ALU_SUB) begin
+                if (expected_in.alu_op == `ALU_ADD) begin
                     expected_out.C = (expected_out.result < expected_in.A || expected_out.result < expected_in.B) ? 1'b1 : 1'b0;
                     expected_out.V = ((expected_in.A[31] == expected_in.B[31]) && (expected_out.result[31] != expected_in.A[31]))? 1'b1 : 1'b0;
                     
@@ -112,17 +100,17 @@ module alu_tb();
             
             if ((actual_in == expected_in) && (actual_out == expected_out)) begin pass++;
                 case (expected_in.alu_op)
-                    ALU_ADD : pass_add++;
-                    ALU_SUB : pass_sub++;
-                    ALU_XOR : pass_xor++;
-                    ALU_AND : pass_and++;
-                    ALU_OR  : pass_or++;
-                    ALU_SLL : pass_sll++;
-                    ALU_SLT : pass_slt++;
-                    ALU_SLTU: pass_sltu++;
-                    ALU_SRL : pass_srl++;
-                    ALU_SRA : pass_sra++;
-                    default : pass_default++;
+                    `ALU_ADD : pass_add++;
+                    `ALU_SUB : pass_sub++;
+                    `ALU_XOR : pass_xor++;
+                    `ALU_AND : pass_and++;
+                    `ALU_OR  : pass_or++;
+                    `ALU_SLL : pass_sll++;
+                    `ALU_SLT : pass_slt++;
+                    `ALU_SLTU: pass_sltu++;
+                    `ALU_SRL : pass_srl++;
+                    `ALU_SRA : pass_sra++;
+                    default  : pass_default++;
                 endcase
              
             end else begin fail++;
@@ -137,16 +125,16 @@ module alu_tb();
                 
                 if (actual_out !== expected_out) begin
                     case (expected_in.alu_op)
-                        ALU_ADD : fail_add++;
-                        ALU_SUB : fail_sub++;
-                        ALU_XOR : fail_xor++;
-                        ALU_AND : fail_and++;
-                        ALU_OR  : fail_or++;
-                        ALU_SLL : fail_sll++;
-                        ALU_SLT : fail_slt++;
-                        ALU_SLTU: fail_sltu++;
-                        ALU_SRL : fail_srl++;
-                        ALU_SRA : fail_sra++;
+                        `ALU_ADD : fail_add++;
+                        `ALU_SUB : fail_sub++;
+                        `ALU_XOR : fail_xor++;
+                        `ALU_AND : fail_and++;
+                        `ALU_OR  : fail_or++;
+                        `ALU_SLL : fail_sll++;
+                        `ALU_SLT : fail_slt++;
+                        `ALU_SLTU: fail_sltu++;
+                        `ALU_SRL : fail_srl++;
+                        `ALU_SRA : fail_sra++;
                         default : fail_default++;
                     endcase
                     

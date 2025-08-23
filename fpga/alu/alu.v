@@ -1,4 +1,4 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Create Date: 08/14/2025 07:16:55 AM
 // Module Name: ALU
@@ -6,14 +6,14 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module alu (
-    input  [31:0] A,
-    input  [31:0] B,
-    input  [3:0]  alu_op,
+    input      [31:0] A,
+    input      [31:0] B,
+    input      [3:0]  alu_op,
     output reg [31:0] result,
-    output reg Z,
-    output reg N,
-    output reg C,
-    output reg V
+    output reg        Z,
+    output reg        N,
+    output reg        C,
+    output reg        V
 );
     localparam [3:0]
     ALU_ADD  = 4'h0,

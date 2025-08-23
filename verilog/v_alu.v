@@ -1,4 +1,4 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Create Date: 08/14/2025 07:16:55 AM
 // Module Name: ALU
@@ -9,12 +9,12 @@
 module v_alu(
     input      [31:0]   A,
     input      [31:0]   B,
-    input      [3:0] alu_op,
+    input      [3:0]    alu_op,
     output reg [31:0]   result,
-    output reg Z,
-    output reg N,
-    output reg C,
-    output reg V
+    output reg          Z,
+    output reg          N,
+    output reg          C,
+    output reg          V
 );
     
     // Precompute heavy paths once (fast carry chains on FPGA)
@@ -27,9 +27,9 @@ module v_alu(
     wire [31:0] w_sll   = A <<  B[4:0];
     wire [31:0] w_srl   = A >>  B[4:0];
     wire [31:0] w_sra   = $signed(A) >>> B[4:0];
-    wire [31:0] w_and  = A & B;
-    wire [31:0] w_or   = A | B;
-    wire [31:0] w_xor  = A ^ B;
+    wire [31:0] w_and   = A & B;
+    wire [31:0] w_or    = A | B;
+    wire [31:0] w_xor   = A ^ B;
     wire [31:0] w_slt   = {31'b0, ($signed(A) <  $signed(B))};
     wire [31:0] w_sltu  = {31'b0, (A < B)};
 
@@ -46,7 +46,7 @@ module v_alu(
             `ALU_XOR : result = w_xor;
             `ALU_SLT : result = w_slt;
             `ALU_SLTU: result = w_sltu;
-            default : result = 32'h0;
+            default  : result = 32'h0;
         endcase
 
         // Flags from the **selected** operation
