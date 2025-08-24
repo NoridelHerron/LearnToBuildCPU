@@ -15,12 +15,6 @@ module ifid_s(
         output logic [31:0] instr_out
     );
     
-    initial begin
-        pc_out       = 32'd0;
-        is_valid_out = 1'b0;
-        instr_out    = 32'd0;
-    end
-    
     always_ff @(posedge clk) begin
         if (reset) begin
             pc_out       <= 32'd0;
@@ -30,7 +24,7 @@ module ifid_s(
         // Normal flow
         end else if (is_valid_in) begin
             pc_out       <= pc_in;
-            is_valid_out <= is_valid_out;
+            is_valid_out <= is_valid_in;
             instr_out    <= instr_in;
         end
     end
