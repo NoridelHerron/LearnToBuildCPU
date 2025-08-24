@@ -41,7 +41,7 @@ module tb_memwb();
     end
 
     
-    memwb_v uut(
+    memwb_s uut(
         .clk(clk),                        .reset(rst),
         .mem_isValid(act_in.isValid),     .mem_pc(act_in.pc),               .mem_instr(act_in.instr),
         .mem_rd(act_in.rd),               .mem_mem_read(act_in.mem_read),   .mem_mem_write(act_in.mem_write), 
