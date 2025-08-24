@@ -30,7 +30,7 @@ module ifid_v(
         // Normal flow
         end else if (is_valid_in) begin
             pc_out       <= pc_in;
-            is_valid_out <= is_valid_out;
+            is_valid_out <= is_valid_in;
             instr_out    <= instr_in;
         end
     end

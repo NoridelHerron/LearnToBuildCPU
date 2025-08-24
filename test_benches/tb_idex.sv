@@ -51,7 +51,7 @@ module tb_idex();
     end
 
     
-    idex_v uut(
+    idex_s uut(
         .clk(clk),                       .reset(rst),
         .id_isValid(act_in.isValid),     .id_pc(act_in.pc),               .id_instr(act_in.instr),
         .id_op(act_in.op),               .id_rd(act_in.rd),               .id_rs1(act_in.rs1),       
@@ -170,7 +170,7 @@ module tb_idex();
             txn.apply_inputs();
             @(posedge clk);
             if (rst) 
-                exp_out = '{default:0};
+                exp_out <= '{default:0};
             else if (exp_in.isValid) begin
                 exp_out.isValid   <= exp_in.isValid;   exp_out.pc       <= exp_in.pc;       exp_out.instr     <= exp_in.instr;
                 exp_out.op        <= exp_in.op;        exp_out.rd       <= exp_in.rd;       exp_out.rs1       <= exp_in.rs1;  
