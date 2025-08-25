@@ -1,7 +1,9 @@
 
 `include "constant_def.vh"
+`include "struct_pkg.vh"
 
 package functions_pkg;
+    import struct_pkg::*;
 
     function automatic bit [4:0] get_expected_controls(input bit [6:0] opcode);
     bit [4:0] exp_out = 5'd0;
@@ -149,5 +151,43 @@ package functions_pkg;
         endcase
         return exp_out;
     endfunction 
+    
+    function automatic alu_out Get_expected_aluResult(input alu_in x);
+    alu_out expected_out = '{default:0};
+
+        case (x.alu_op)
+                `ALU_ADD:  expected_out.result = x.A + x.B;
+                `ALU_SUB:  expected_out.result = x.A - x.B;
+                `ALU_XOR:  expected_out.result = x.A ^ x.B;
+                `ALU_OR:   expected_out.result = x.A | x.B;
+                `ALU_AND:  expected_out.result = x.A & x.B;
+                `ALU_SLL:  expected_out.result = x.A << x.B[4:0];
+                `ALU_SRL:  expected_out.result = x.A >> x.B[4:0];
+                `ALU_SRA:  expected_out.result = $signed(x.A) >>> x.B[4:0];
+                `ALU_SLT:  expected_out.result = ($signed(x.A) < $signed(x.B)) ? 32'b1 : 32'b0;
+                `ALU_SLTU: expected_out.result = (x.A < x.B) ? 32'b1 : 32'b0;
+                default:   expected_out.result = 32'b0;
+            endcase
+            
+            if (x.alu_op == `ALU_ADD || x.alu_op == `ALU_SUB) begin
+                if (x.alu_op == `ALU_ADD) begin
+                    expected_out.C = (expected_out.result < x.A || expected_out.result < x.B) ? 1'b1 : 1'b0;
+                    expected_out.V = ((x.A[31] == x.B[31]) && (expected_out.result[31] != x.A[31]))? 1'b1 : 1'b0;
+                    
+                end else begin
+                    expected_out.C = (x.A >= x.B) ? 1'b1 : 1'b0;
+                    expected_out.V = ((x.A[31] != x.B[31]) && (expected_out.result[31] != x.A[31]))? 1'b1 : 1'b0;
+                end
+                
+            end else begin
+                expected_out.C = 1'b0;
+                expected_out.V = 1'b0;
+            end
+            
+            expected_out.N = (expected_out.result[31] == 1'b1) ? 1'b1 : 1'b0;
+            expected_out.Z = (expected_out.result == 32'b0)    ? 1'b1 : 1'b0;
+    
+        return expected_out;
+    endfunction
 
 endpackage

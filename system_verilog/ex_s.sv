@@ -21,16 +21,17 @@ module ex_s(
     
     logic [31:0] f_data1, f_data2;
     
-    forw_unit_v forward(
-        .isForw_ON(isForw_ON),
-        .op(op),
+    forw_unit_s forward(
+        .isForw_ON(isForw_ON),       .op(op),
         .exmem_result(exmem_result), .memwb_result(memwb_result),
-        .forwA(forwA), .forwB(forwB),
-        .data1(data1), .data2(data2), .s_data(s_data),
-        .operand1(f_data1), .operand2(f_data2), .sData(sData)
+        .forwA(forwA),               .forwB(forwB),
+        .data1(data1),               .data2(data2), 
+        .s_data(s_data),
+        .operand1(f_data1),          .operand2(f_data2), 
+        .sData(sData)
     );
     
-    v_alu alu(
+    alu_s alu(
         .A(f_data1),
         .B(f_data2),
         .alu_op(alu_op),

@@ -34,5 +34,27 @@ package struct_pkg;
         logic        regWrite;              
         logic [4:0]  rd;
     } rd_write;
+    
+    typedef struct packed {
+        logic [3:0]  alu_op;
+        logic [31:0] A, B;
+    } alu_in;
+    
+    typedef struct packed {
+        logic        Z, N, C, V;
+        logic [31:0] result;
+    } alu_out;
+    
+    typedef struct packed {
+        logic        isForw_ON;
+        logic [1:0]  forwA, forwB;
+        logic [6:0]  op;
+        logic [31:0] exmem, memwb;
+        logic [31:0] data1, data2, s_data;
+    } forw_in;
+    
+    typedef struct packed {
+        logic [31:0] operand1, operand2, sData;
+    } forw_out;
 
 endpackage 
