@@ -45,16 +45,4 @@ package struct_pkg;
         logic [31:0] result;
     } alu_out;
     
-    typedef struct packed {
-        logic        isForw_ON;
-        logic [1:0]  forwA, forwB;
-        logic [6:0]  op;
-        logic [31:0] exmem, memwb;
-        logic [31:0] data1, data2, s_data;
-    } forw_in;
-    
-    typedef struct packed {
-        logic [31:0] operand1, operand2, sData;
-    } forw_out;
-
 endpackage 

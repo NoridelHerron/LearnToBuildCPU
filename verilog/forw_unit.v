@@ -64,8 +64,8 @@ module forw_unit_v(
                         end
                         */
                         default  : begin
-                            operand2 = data2;
-                            sData    = s_data;
+                            operand2 = 32'd0;
+                            sData    = 32'd0;
                         end     
                     endcase
                 end
@@ -74,6 +74,11 @@ module forw_unit_v(
                     case (op)
                         `R_TYPE : begin
                             operand2 = memwb_result;
+                            sData    = s_data;
+                        end
+                        
+                        `I_IMM, `I_LOAD : begin
+                            operand2 = data2;
                             sData    = s_data;
                         end
                         
@@ -99,14 +104,15 @@ module forw_unit_v(
                         end
                         */
                         default  : begin
-                            operand2 = data2;
-                            sData    = s_data;
+                            operand2 = 32'd0;
+                            sData    = 32'd0;
                         end     
                     endcase
                 end
                 
                 default : begin 
                     operand2 = 32'd0;
+                    sData    = 32'd0;
                 end
             endcase
         

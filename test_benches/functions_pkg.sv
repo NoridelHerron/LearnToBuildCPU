@@ -1,6 +1,6 @@
 
 `include "constant_def.vh"
-`include "struct_pkg.vh"
+`include "struct_pkg.sv"
 
 package functions_pkg;
     import struct_pkg::*;
