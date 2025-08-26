@@ -6,17 +6,17 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module ex_v( 
-        input      [3:0]  alu_op,
-        input             isForw_ON,
-        input      [6:0]  op,
-        input      [31:0] exmem_result, memwb_result,
-        input      [1:0]  forwA, forwB,
-        input      [31:0] data1, data2, s_data,
-        output reg [31:0] result, sData,
-        output reg        Z,
-        output reg        N,
-        output reg        C,
-        output reg        V
+        input  [3:0]  alu_op,
+        input         isForw_ON,
+        input  [6:0]  op,
+        input  [31:0] exmem_result, memwb_result,
+        input  [1:0]  forwA, forwB,
+        input  [31:0] data1, data2, s_data,
+        output [31:0] result, sData,
+        output        Z,
+        output        N,
+        output        C,
+        output        V
     );
     
     wire [31:0] f_data1, f_data2;

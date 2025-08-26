@@ -152,42 +152,131 @@ package functions_pkg;
         return exp_out;
     endfunction 
     
-    function automatic alu_out Get_expected_aluResult(input alu_in x);
-    alu_out expected_out = '{default:0};
+    function automatic bit [35:0] Get_expected_aluResult(
+        input  bit [31:0] operand1, operand2, 
+        input  bit [3:0]  aluOp );
+    bit [35:0] exp_out = 5'd0;
 
-        case (x.alu_op)
-                `ALU_ADD:  expected_out.result = x.A + x.B;
-                `ALU_SUB:  expected_out.result = x.A - x.B;
-                `ALU_XOR:  expected_out.result = x.A ^ x.B;
-                `ALU_OR:   expected_out.result = x.A | x.B;
-                `ALU_AND:  expected_out.result = x.A & x.B;
-                `ALU_SLL:  expected_out.result = x.A << x.B[4:0];
-                `ALU_SRL:  expected_out.result = x.A >> x.B[4:0];
-                `ALU_SRA:  expected_out.result = $signed(x.A) >>> x.B[4:0];
-                `ALU_SLT:  expected_out.result = ($signed(x.A) < $signed(x.B)) ? 32'b1 : 32'b0;
-                `ALU_SLTU: expected_out.result = (x.A < x.B) ? 32'b1 : 32'b0;
-                default:   expected_out.result = 32'b0;
+        case (aluOp)
+                `ALU_ADD:  exp_out[31:0] = operand1 + operand2;
+                `ALU_SUB:  exp_out[31:0] = operand1 - operand2;
+                `ALU_XOR:  exp_out[31:0] = operand1 ^ operand2;
+                `ALU_OR:   exp_out[31:0] = operand1 | operand2;
+                `ALU_AND:  exp_out[31:0] = operand1 & operand2;
+                `ALU_SLL:  exp_out[31:0] = operand1 << operand2[4:0];
+                `ALU_SRL:  exp_out[31:0] = operand1 >> operand2[4:0];
+                `ALU_SRA:  exp_out[31:0] = $signed(operand1) >>> operand2[4:0];
+                `ALU_SLT:  exp_out[31:0] = ($signed(operand1) < $signed(operand2)) ? 32'b1 : 32'b0;
+                `ALU_SLTU: exp_out[31:0] = (operand1 < operand2) ? 32'b1 : 32'b0;
+                default:   exp_out[31:0] = 32'b0;
             endcase
             
-            if (x.alu_op == `ALU_ADD || x.alu_op == `ALU_SUB) begin
-                if (x.alu_op == `ALU_ADD) begin
-                    expected_out.C = (expected_out.result < x.A || expected_out.result < x.B) ? 1'b1 : 1'b0;
-                    expected_out.V = ((x.A[31] == x.B[31]) && (expected_out.result[31] != x.A[31]))? 1'b1 : 1'b0;
+            if (aluOp == `ALU_ADD || aluOp == `ALU_SUB) begin
+                if (aluOp == `ALU_ADD) begin
+                    exp_out[32] = (exp_out[31:0] < operand1 || exp_out[31:0] < operand2) ? 1'b1 : 1'b0;
+                    exp_out[33] = ((operand1[31] == operand2[31]) && (exp_out[31] != operand1[31]))? 1'b1 : 1'b0;
                     
                 end else begin
-                    expected_out.C = (x.A >= x.B) ? 1'b1 : 1'b0;
-                    expected_out.V = ((x.A[31] != x.B[31]) && (expected_out.result[31] != x.A[31]))? 1'b1 : 1'b0;
+                    exp_out[32] = (operand1 >= operand2) ? 1'b1 : 1'b0;
+                    exp_out[33] = ((operand1[31] != operand2) && (exp_out[31] != operand1[31]))? 1'b1 : 1'b0;
                 end
                 
             end else begin
-                expected_out.C = 1'b0;
-                expected_out.V = 1'b0;
+                exp_out[32] = 1'b0;
+                exp_out[33] = 1'b0;
             end
             
-            expected_out.N = (expected_out.result[31] == 1'b1) ? 1'b1 : 1'b0;
-            expected_out.Z = (expected_out.result == 32'b0)    ? 1'b1 : 1'b0;
+            exp_out[34] = (exp_out[31]   == 1'b1)  ? 1'b1 : 1'b0;
+            exp_out[35] = (exp_out[31:0] == 32'b0) ? 1'b1 : 1'b0;
     
-        return expected_out;
+        return exp_out;
     endfunction
+    
+    function automatic bit [35:0] Get_expected_forw(
+    input  bit [31:0] isForw_ON,
+    input  bit [6:0]  op,
+    input  bit [31:0] exmem,
+    input  bit [31:0] memwb, 
+    input  bit [1:0]  forwA, forwB,
+    input  bit [31:0] data1, data2, s_data );
+    bit [95:0] exp_out = 5'd0;
+    
+        if (isForw_ON) begin
+            case (forwA)
+                2'b00   : exp_out[95:64] = data1;
+                2'b01   : exp_out[95:64] = exmem;
+                2'b10   : exp_out[95:64] = memwb;
+                default : exp_out[95:64] = 32'd0;
+            endcase
+        
+            case (forwB)
+                2'b00   : begin 
+                    exp_out[63:32] = data2;
+                    exp_out[31:0]  = s_data;
+                end
+                
+                2'b01   : begin
+                    case (op)
+                        `R_TYPE : begin
+                            exp_out[63:32] = exmem;
+                            exp_out[31:0]  = s_data;
+                        end
+                        
+                        `I_IMM, `I_LOAD : begin
+                            exp_out[63:32] = data2;
+                            exp_out[31:0]  = s_data;
+                        end
+                        
+                        `S_TYPE : begin
+                            exp_out[63:32] = data2;
+                            exp_out[31:0]  = exmem;
+                        end
+                        
+                        default  : begin
+                            exp_out[63:32] = 32'd0;
+                            exp_out[31:0]  = 32'd0;
+                        end     
+                    endcase
+                end
+                
+                2'b10   : begin 
+                    case (op)
+                        `R_TYPE : begin
+                            exp_out[63:32] = memwb;
+                            exp_out[31:0]  = s_data;
+                        end
+                        
+                        `I_IMM, `I_LOAD : begin
+                            exp_out[63:32] = data2;
+                            exp_out[31:0]  = s_data;
+                        end
+                        
+                        `S_TYPE : begin
+                            exp_out[63:32] = data2;
+                            exp_out[31:0]  = memwb;
+                        end                       
+                        
+                        default  : begin
+                            exp_out[63:32] = 32'd0;
+                            exp_out[31:0]  = 32'd0;
+                        end     
+                    endcase
+                end
+                
+                default : begin
+                    exp_out[63:32] = 32'd0;
+                    exp_out[31:0]  = 32'd0;
+                end
+            endcase
+        
+        end else begin
+            exp_out[95:64] = data1;
+            exp_out[63:32] = data2;
+            exp_out[31:0]  = s_data;
+        end    
+        
+        return exp_out;
+    endfunction
+
 
 endpackage
