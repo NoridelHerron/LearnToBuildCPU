@@ -122,7 +122,7 @@ package functions_pkg;
         input  bit [11:0] imm,
         input  bit [6:0]  op
     );
-        bit [95:0] exp_out = 5'd0;
+        bit [95:0] exp_out = 96'd0;
         
         case (op)
             `R_TYPE, `B_TYPE  : begin
@@ -155,7 +155,7 @@ package functions_pkg;
     function automatic bit [35:0] Get_expected_aluResult(
         input  bit [31:0] operand1, operand2, 
         input  bit [3:0]  aluOp );
-    bit [35:0] exp_out = 5'd0;
+    bit [35:0] exp_out = 36'd0;
 
         case (aluOp)
                 `ALU_ADD:  exp_out[31:0] = operand1 + operand2;
@@ -178,7 +178,7 @@ package functions_pkg;
                     
                 end else begin
                     exp_out[32] = (operand1 >= operand2) ? 1'b1 : 1'b0;
-                    exp_out[33] = ((operand1[31] != operand2) && (exp_out[31] != operand1[31]))? 1'b1 : 1'b0;
+                    exp_out[33] = ((operand1[31] != operand2[31]) && (exp_out[31] != operand1[31]))? 1'b1 : 1'b0;
                 end
                 
             end else begin
@@ -192,14 +192,14 @@ package functions_pkg;
         return exp_out;
     endfunction
     
-    function automatic bit [35:0] Get_expected_forw(
+    function automatic bit [95:0] Get_expected_forw(
     input  bit [31:0] isForw_ON,
     input  bit [6:0]  op,
     input  bit [31:0] exmem,
     input  bit [31:0] memwb, 
     input  bit [1:0]  forwA, forwB,
     input  bit [31:0] data1, data2, s_data );
-    bit [95:0] exp_out = 5'd0;
+    bit [95:0] exp_out = 96'd0;
     
         if (isForw_ON) begin
             case (forwA)
