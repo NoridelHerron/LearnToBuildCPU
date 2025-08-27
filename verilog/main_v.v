@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module main_v(
+module main_v #(parameter isForw_ON = 1)(
     input  clk, reset,
     output reg        if_isValid_out,
     output reg [31:0] if_pc_out,       if_instr_out,
@@ -48,14 +48,27 @@ module main_v(
     wire [31:0] id_operand1, id_operand2, id_sData;  
     
     // EX STAGE signal
-    reg [4:0]   ex_rd, ex_rs1, ex_rs2;
-    reg         ex_memRead, ex_regWrite;
+    wire        ex_isValid;     
+    wire [31:0] ex_pc, ex_instr;
+    wire [6:0]  ex_op; 
+    wire [4:0]  ex_rd, ex_rs1, ex_rs2;  
+    wire        ex_mem_read;  
+    wire        ex_mem_write; 
+    wire        ex_reg_write;   
+    wire        ex_jump;       
+    wire        ex_branch;    
+    wire [3:0]  ex_alu_op;
+    wire [31:0] ex_operand1,  ex_operand2,  ex_s_data;
+    wire [31:0] ex_result, ex_sData;
+    wire        ex_Z, ex_N, ex_C, ex_V;
     
     // MEM STAGE signals
+    wire [31:0] exmem_result;
     reg [4:0]  mem_rd;
     reg        mem_regWrite;
     
-    // MEM STAGE signals
+    // WB STAGE SIGNALS
+    wire [31:0] memwb_result;
     reg [4:0]  wb_rd;
     reg        wb_regWrite;
     reg [31:0] wb_data;
@@ -108,84 +121,79 @@ module main_v(
         .operand2(id_operand2),        .s_data(id_sData)
     );
     
-    always @(*) begin
-        id_op_out        = id_op;
-        id_rd_out        = id_rd;       
-        id_rs1_out       = id_rs1;      
-        id_rs2_out       = id_rs2;
-        id_memRead_out   = id_memRead;  
-        id_memWrite_out  = id_memWrite;
-        id_regWrite_out  = id_regWrite; 
-        id_jump_out      = id_jump;     
-        id_branch_out    = id_branch;
-        id_aluOp_out     = id_aluOp;
-        id_forwA_out     = id_forwA;    
-        id_forwB_out     = id_forwB;
-        id_stall_out     = id_stall;   
-        id_operand1_out  = id_operand1; 
-        id_operand2_out  = id_operand2; 
-        id_sData_out     = id_sData;
-    end;
+    idex_v idex_uut(
+        .clk(clk),                   .reset(reset), 
+        .id_isValid(id_isValid),     .id_pc(id_pc),      
+        .id_instr(id_instr),         .id_op(id_op),              
+        .id_rd(id_rd),               .id_rs1(id_rs1), 
+        .id_rs2(id_rs2),             .id_mem_read(id_memRead),     
+        .id_mem_write(id_memWrite),  .id_reg_write(id_regWrite),   
+        .id_jump(id_jump),           .id_branch(id_branch),       
+        .id_alu_op(id_aluOp),        .id_stall(id_stall),       
+        .id_operand1(id_operand1),   .id_operand2(id_operand2),   
+        .id_s_data(id_sData),        .ex_isValid(ex_isValid),     
+        .ex_pc(ex_pc),               .ex_instr(ex_instr),
+        .ex_op(ex_op),               .ex_rd(ex_rd), 
+        .ex_rs1(ex_rs1),             .ex_rs2(ex_rs2),  
+        .ex_mem_read(ex_mem_read),   .ex_mem_write(ex_mem_write), 
+        .ex_reg_write(ex_reg_write), .ex_jump(ex_jump),       
+        .ex_branch(ex_branch),       .ex_alu_op(ex_alu_op),
+        .ex_operand1(ex_operand1),   .ex_operand2(ex_operand2),  
+        .ex_s_data(ex_s_data)
+    );
     
-    // temporary id/ex register
-    always @(posedge clk) begin
-        if (reset) begin
-            ex_rd       <= 5'd0;
-            ex_rs1      <= 5'd0; 
-            ex_rs2      <= 5'd0;
-            ex_memRead  <= 1'b0;
-            ex_regWrite <= 1'b0;
-            
-        end else begin
-            ex_rd       <= id_rd;
-            ex_rs1      <= id_rs1; 
-            ex_rs2      <= id_rs2;
-            ex_memRead  <= id_memRead;
-            ex_regWrite <= id_regWrite;
-        end
-    end
+    ex_v ex_uut( 
+        .alu_op(ex_alu_op),          .isForw_ON(isForw_ON),
+        .op(ex_op),                  .exmem_result(exmem_result), 
+        .memwb_result(memwb_result), .forwA(id_forwA), 
+        .forwB(id_forwB),            .data1(ex_operand1), 
+        .data2(ex_operand2),         .s_data(ex_s_data),
+        // Outputs
+        .result(ex_result),          .sData(ex_sData),
+        .Z(ex_Z), .N(ex_N),          .C(ex_C), .V(ex_V)
+    );
     
-    always @(*) begin
-        ex_rd_out        = ex_rd;       
-        ex_rs1_out       = ex_rs1;      
-        ex_rs2_out       = ex_rs2;
-        ex_regWrite_out  = ex_regWrite;
-    end;
+    exmem_v exmem_uut(
+        .clk(clk),                     .reset(reset), 
+        .ex_isValid(ex_isValid),       .ex_pc(ex_pc), 
+        .ex_instr(ex_instr),           .ex_rd(ex_rd),  
+        .ex_mem_read(ex_mem_read),     .ex_mem_write(ex_mem_write), 
+        .ex_reg_write(ex_reg_write),   .ex_result(ex_result), 
+        .ex_sData(ex_sData),           .mem_isValid(mem_isValid),     
+        .mem_pc(mem_pc),               .mem_instr(mem_instr),
+        .mem_rd(mem_rd),               .mem_mem_read(mem_mem_read),   
+        .mem_mem_write(mem_mem_write), .mem_reg_write(mem_reg_write), 
+        .mem_result(mem_result),       .mem_sData(mem_sData)
+    );
     
-    // temporary ex/mem register
-    always @(posedge clk) begin
-        if (reset) begin
-            mem_rd       <= 5'd0;
-            mem_regWrite <= 1'b0;
-            
-        end else begin
-            mem_rd       <= ex_rd;
-            mem_regWrite <= ex_regWrite;
-        end
-    end
+    mem_stage_v mem_stage_uut(
+        .clk(clk),
+        .is_memRead(is_memRead),
+        .is_memWrite(is_memWrite),
+        .address(mem_pc),
+        .S_data(S_data),
+        .data_out(data_out)  
+    );
     
-    always @(*) begin
-        mem_rd_out       = mem_rd;
-        mem_regWrite_out = mem_regWrite;
-    end;
+    memwb_v memwb_uut(
+        .clk(clk),                     .reset(reset), 
+        .mem_isValid(mem_isValid),     .mem_pc(mem_pc), 
+        .mem_instr(mem_instr),         .mem_rd(mem_rd),  
+        .mem_mem_read(mem_mem_read),   .mem_mem_write(mem_mem_write), 
+        .mem_reg_write(mem_reg_write), .mem_aluResult(mem_aluResult), 
+        .mem_memResult(mem_memResult), .wb_rd(wb_rd),  
+        .wb_mem_read(wb_mem_read),     .wb_mem_write(wb_mem_write), 
+        .wb_reg_write(wb_reg_write),   .wb_aluResult(wb_aluResult),   
+        .wb_memResult(wb_memResult)
+    );
     
-    // temporary mem/wb register
-    always @(posedge clk) begin
-        if (reset) begin
-            wb_rd       <= 5'd0;
-            wb_regWrite <= 1'b0;
-            
-        end else begin
-            wb_rd       <= mem_rd;
-            wb_regWrite <= mem_regWrite;
-        end
-        wb_data <= 32'd0;
-    end
+    WB_v WB_uut(
+        .is_memRead(wb_mem_read), 
+        .is_memWrite(wb_mem_write), 
+        .mem_data(wb_memResult), 
+        .alu_data(wb_aluResult), 
+        .wb_data(wb_data) 
+    );
     
-    always @(*) begin
-        wb_rd_out        = wb_rd;
-        wb_regWrite_out  = wb_regWrite;
-        wb_data_out      = wb_data; 
-    end;
     
 endmodule
