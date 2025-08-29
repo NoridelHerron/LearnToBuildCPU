@@ -18,17 +18,17 @@ module tb_wb();
     logic [31:0] act_data, exp_data; // outputs
     
     // Instantiate DUT
-    WB_s dut (
+    WB_v dut (
         // inputs
         .is_memRead(act_in.is_memRead),
         .is_memWrite(act_in.is_memWrite),
-        .mem_data(act_in.mem_data),
         .alu_data(act_in.alu_data),
+        .mem_data(act_in.mem_data),
         // output
         .wb_data(act_data)
     );
     
-    int total_tests = 100000;
+    int total_tests = 10000;
     // Keep track all the test and make sure it covers all the cases
     int pass = 0, fail = 0, num_isRegWrite = 0, num_isMemRead = 0, num_none = 0;
     

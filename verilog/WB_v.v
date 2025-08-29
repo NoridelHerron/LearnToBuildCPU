@@ -3,8 +3,8 @@
 module WB_v(
         input             is_memRead, 
         input             is_memWrite, 
-        input  [31:0]     mem_data, 
         input  [31:0]     alu_data, 
+        input  [31:0]     mem_data,  
         output reg [31:0] wb_data 
     );
     

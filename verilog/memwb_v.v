@@ -15,6 +15,8 @@ module memwb_v(
         input             mem_mem_write, 
         input             mem_reg_write, 
         input      [31:0] mem_aluResult, mem_memResult,
+        output reg        wb_isValid,     
+        output reg [31:0] wb_pc, wb_instr,
         output reg [4:0]  wb_rd,  
         output reg        wb_mem_read,   
         output reg        wb_mem_write, 
@@ -24,6 +26,9 @@ module memwb_v(
     
     always @(posedge clk) begin
         if (reset) begin
+            wb_isValid    <= 1'd0;
+            wb_pc         <= 32'd0;  
+            wb_instr      <= 32'd0; 
             wb_rd         <= 5'd0;
             wb_mem_read   <= 1'd0;  
             wb_mem_write  <= 1'd0; 
@@ -33,6 +38,9 @@ module memwb_v(
     
         // Normal flow
         end else if (mem_isValid) begin
+            wb_isValid    <= mem_isValid;
+            wb_pc         <= mem_pc;  
+            wb_instr      <= mem_instr; 
             wb_rd         <= mem_rd;
             wb_mem_read   <= mem_mem_read;  
             wb_mem_write  <= mem_mem_write; 

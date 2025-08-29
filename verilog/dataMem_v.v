@@ -20,9 +20,8 @@ module dataMem_v (
 
     // Synchronous write
     always @(posedge clk) begin
-        if (mem_write) begin
+        if (mem_write)
             mem[address] <= write_data;
-        end
     end
 
     // Combinational read with condition

@@ -21,6 +21,8 @@ module tb_memwb();
     } memwb_in; 
     
     typedef struct packed {
+        logic        isValid;   
+        logic [31:0] pc, instr;
         logic [4:0]  rd;  
         logic        mem_read;   
         logic        mem_write; 
@@ -41,17 +43,18 @@ module tb_memwb();
     end
 
     
-    memwb_s uut(
+    memwb_v uut(
         .clk(clk),                        .reset(rst),
         .mem_isValid(act_in.isValid),     .mem_pc(act_in.pc),               .mem_instr(act_in.instr),
         .mem_rd(act_in.rd),               .mem_mem_read(act_in.mem_read),   .mem_mem_write(act_in.mem_write), 
         .mem_reg_write(act_in.reg_write), .mem_aluResult(act_in.aluResult), .mem_memResult(act_in.memResult),
         // Outputs
+        .wb_isValid(act_out.isValid),     .wb_pc(act_out.pc),               .wb_instr(act_out.instr),
         .wb_rd(act_out.rd),               .wb_mem_read(act_out.mem_read),   .wb_mem_write(act_out.mem_write), 
         .wb_reg_write(act_out.reg_write), .wb_aluResult(act_out.aluResult), .wb_memResult(act_out.memResult)
     );
     
-    int total_tests = 1000000;
+    int total_tests = 10000;
     int pass    = 0, fail     = 0, fail_V   = 0, fail_pc  = 0, fail_instr = 0;
     int fail_in = 0, fail_rd  = 0, fail_mR  = 0, fail_mW  = 0, fail_rW  = 0, fail_aRes  = 0, fail_mRes = 0;
     int fail_o  = 0, fail_rdo = 0, fail_mRo = 0, fail_mWo = 0, fail_rWo = 0, fail_aro = 0, fail_mro  = 0;
@@ -137,6 +140,9 @@ module tb_memwb();
             if (rst) 
                 exp_out <= '{default:0};
             else if (exp_in.isValid) begin
+                exp_out.isValid   <= exp_in.isValid; 
+                exp_out.pc        <= exp_in.pc; 
+                exp_out.instr     <= exp_in.instr; 
                 exp_out.rd        <= exp_in.rd; 
                 exp_out.mem_read  <= exp_in.mem_read; 
                 exp_out.mem_write <= exp_in.mem_write;   

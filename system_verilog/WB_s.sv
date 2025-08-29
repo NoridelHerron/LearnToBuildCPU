@@ -3,8 +3,8 @@
 module WB_s(
         input  logic        is_memRead, 
         input  logic        is_memWrite, 
-        input  logic [31:0] mem_data, 
         input  logic [31:0] alu_data, 
+        input  logic [31:0] mem_data, 
         output logic [31:0] wb_data 
     );
     

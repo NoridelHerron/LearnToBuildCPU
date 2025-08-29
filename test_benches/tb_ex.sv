@@ -35,7 +35,7 @@ module tb_ex();
     ex_in        act_in,  exp_in;
     ex_out       act_out, exp_out;
     
-    ex_s uut(
+    ex_v uut(
         .alu_op(act_in.aluOp),       .isForw_ON(act_in.isForw_ON),
         .op(act_in.op),              .exmem_result(act_in.exmem), 
         .memwb_result(act_in.memwb), .forwA(act_in.forwA),        

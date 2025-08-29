@@ -3,7 +3,7 @@
 // Module Name: alu_op_generator
 // Name: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
-`include "constant_def.vh"
+`include "constant_def.svh"
 
 module aluOp_gen_s(
         input  logic [6:0] op, // opcode

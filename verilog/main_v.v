@@ -7,26 +7,43 @@
 
 
 module main_v #(parameter isForw_ON = 1)(
-    input  clk, reset,
+    input             clk, reset,
+    output reg [64:0] if_stage_out,  
     output reg        if_isValid_out,
     output reg [31:0] if_pc_out,       if_instr_out,
+    
     output reg        id_isValid_out,
     output reg [31:0] id_pc_out,       id_instr_out,
-    output reg [6:0]  id_op_out,
-    output reg [4:0]  id_rd_out,       id_rs1_out,      id_rs2_out,
+    output reg [6:0]  id_op_out,                                                    
+    output reg [4:0]  id_rd_out,       id_rs1_out,      id_rs2_out,                                    
     output reg        id_memRead_out,  id_memWrite_out, 
     output reg        id_regWrite_out, id_jump_out,     id_branch_out,
     output reg [3:0]  id_aluOp_out,
     output reg [1:0]  id_forwA_out,    id_forwB_out,
-    output reg        id_stall_out,    
-    output reg [31:0] id_operand1_out, id_operand2_out, id_sData_out,
+    output reg        id_stall_out,  
+    output reg [31:0] id_operand1_out, id_operand2_out, id_sData_out, 
+        
+    output reg        ex_isValid_out,
+    output reg [31:0] ex_pc_out,       ex_instr_out,
+    output reg [6:0]  ex_op_out,
     output reg [4:0]  ex_rd_out,       ex_rs1_out,      ex_rs2_out,
-    output reg        ex_regWrite_out, 
+    output reg        ex_regWrite_out, ex_memWrite_out, ex_memRead_out,
+    output reg        ex_jump_out,     ex_branch_out, 
+    output reg [3:0]  ex_aluOp_out,
+    output reg [31:0] ex_operand1_out, ex_operand2_out, ex_sData_out,
+    
+    output reg        mem_isValid_out,
+    output reg [31:0] mem_pc_out,       mem_instr_out,
     output reg [4:0]  mem_rd_out,
-    output reg        mem_regWrite_out, 
+    output reg        mem_regWrite_out, mem_memWrite_out, mem_memRead_out,
+    output reg [31:0] mem_aluRes_out,   mem_sData_out,
+    
+    output reg        wb_isValid_out,
+    output reg [31:0] wb_pc_out,       wb_instr_out,
     output reg [4:0]  wb_rd_out,
-    output reg        wb_regWrite_out,
-    output reg [31:0] wb_data_out 
+    output reg        wb_regWrite_out, wb_memWrite_out, wb_memRead_out,
+    output reg [31:0] wb_alu_out,       wb_mem_out,
+    output     [31:0] wb_data_out 
     );
     
     wire        is_flush;
@@ -63,16 +80,24 @@ module main_v #(parameter isForw_ON = 1)(
     wire        ex_Z, ex_N, ex_C, ex_V;
     
     // MEM STAGE signals
-    wire [31:0] exmem_result;
-    reg [4:0]  mem_rd;
-    reg        mem_regWrite;
+    wire [31:0] alu_result;
+    wire [31:0] mem_result;
+    wire        mem_isValid;     
+    wire [31:0] mem_pc, mem_instr;
+    wire [4:0]  mem_rd;
+    wire        mem_memRead;
+    wire        mem_memWrite;
+    wire        mem_regWrite;
     
     // WB STAGE SIGNALS
-    wire [31:0] memwb_result;
-    reg [4:0]  wb_rd;
-    reg        wb_regWrite;
-    reg [31:0] wb_data;
-    
+    wire        wb_isValid;     
+    wire [31:0] wb_pc, wb_instr;
+    wire [31:0] wb_alu, wb_mem;
+    wire [4:0]  wb_rd;
+    wire        wb_memRead;
+    wire        wb_memWrite;
+    wire        wb_regWrite;
+    wire [31:0] wb_data;
     
     // IF Stage
     if_stage_v if_uut(
@@ -121,6 +146,23 @@ module main_v #(parameter isForw_ON = 1)(
         .operand2(id_operand2),        .s_data(id_sData)
     );
     
+    always @(*) begin
+        id_op_out       = id_op;                                                
+        id_rd_out       = id_rs1;      
+        id_rs2_out      = id_rs2;                                    
+        id_memRead_out  = id_memWrite;
+        id_regWrite_out = id_regWrite; 
+        id_jump_out     = id_jump;     
+        id_branch_out   = id_branch;
+        id_aluOp_out    = id_aluOp;
+        id_forwA_out    = id_forwA;   
+        id_forwB_out    = id_forwB;
+        id_stall_out    = id_stall; 
+        id_operand1_out = id_operand1;
+        id_operand2_out = id_operand2; 
+        id_sData_out    = id_sData;
+    end;
+    
     idex_v idex_uut(
         .clk(clk),                   .reset(reset), 
         .id_isValid(id_isValid),     .id_pc(id_pc),      
@@ -131,7 +173,9 @@ module main_v #(parameter isForw_ON = 1)(
         .id_jump(id_jump),           .id_branch(id_branch),       
         .id_alu_op(id_aluOp),        .id_stall(id_stall),       
         .id_operand1(id_operand1),   .id_operand2(id_operand2),   
-        .id_s_data(id_sData),        .ex_isValid(ex_isValid),     
+        .id_s_data(id_sData),        
+        // Outputs
+        .ex_isValid(ex_isValid),     
         .ex_pc(ex_pc),               .ex_instr(ex_instr),
         .ex_op(ex_op),               .ex_rd(ex_rd), 
         .ex_rs1(ex_rs1),             .ex_rs2(ex_rs2),  
@@ -141,6 +185,25 @@ module main_v #(parameter isForw_ON = 1)(
         .ex_operand1(ex_operand1),   .ex_operand2(ex_operand2),  
         .ex_s_data(ex_s_data)
     );
+    
+    always @(*) begin
+        ex_isValid_out   = ex_isValid;
+        ex_pc_out        = ex_pc;       
+        ex_instr_out     = ex_instr;
+        ex_op_out        = ex_op;
+        ex_rd_out        = ex_rd;
+        ex_rs1_out       = ex_rs1; 
+        ex_rs2_out       = ex_rs2;
+        ex_regWrite_out  = ex_reg_write;
+        ex_memWrite_out  = ex_mem_write; 
+        ex_memRead_out   = ex_mem_read;
+        ex_jump_out      = ex_jump;
+        ex_branch_out    = ex_branch;
+        ex_aluOp_out     = ex_alu_op;
+        ex_operand1_out  = ex_operand1;
+        ex_operand2_out  = ex_operand2; 
+        ex_sData_out     = ex_s_data;
+    end;
     
     ex_v ex_uut( 
         .alu_op(ex_alu_op),          .isForw_ON(isForw_ON),
@@ -155,45 +218,83 @@ module main_v #(parameter isForw_ON = 1)(
     
     exmem_v exmem_uut(
         .clk(clk),                     .reset(reset), 
+        // Inputs directly from the ID/EX reg
         .ex_isValid(ex_isValid),       .ex_pc(ex_pc), 
         .ex_instr(ex_instr),           .ex_rd(ex_rd),  
         .ex_mem_read(ex_mem_read),     .ex_mem_write(ex_mem_write), 
-        .ex_reg_write(ex_reg_write),   .ex_result(ex_result), 
-        .ex_sData(ex_sData),           .mem_isValid(mem_isValid),     
+        .ex_reg_write(ex_reg_write),   
+        // Inputs directly from the EX STAGE
+        .ex_result(ex_result),         .ex_sData(ex_sData),           
+        // Outputs
+        .mem_isValid(mem_isValid),     
         .mem_pc(mem_pc),               .mem_instr(mem_instr),
-        .mem_rd(mem_rd),               .mem_mem_read(mem_mem_read),   
-        .mem_mem_write(mem_mem_write), .mem_reg_write(mem_reg_write), 
-        .mem_result(mem_result),       .mem_sData(mem_sData)
+        .mem_rd(mem_rd),               .mem_mem_read(mem_memRead),   
+        .mem_mem_write(mem_memWrite),  .mem_reg_write(mem_regWrite), 
+        .mem_result(alu_result),       .mem_sData(mem_sData)
     );
+    
+    always @(*) begin
+        mem_isValid_out   = mem_isValid;
+        mem_pc_out        = mem_pc;       
+        mem_instr_out     = mem_instr;
+        mem_rd_out        = mem_rd;
+        mem_regWrite_out  = mem_regWrite;
+        mem_memWrite_out  = mem_memWrite;
+        mem_memRead_out   = mem_memRead;
+        mem_aluRes_out    = alu_result;
+        mem_sData_out     = mem_sData;
+    end;
     
     mem_stage_v mem_stage_uut(
         .clk(clk),
-        .is_memRead(is_memRead),
-        .is_memWrite(is_memWrite),
-        .address(mem_pc),
-        .S_data(S_data),
-        .data_out(data_out)  
+        // // Inputs from EX/MEM reg
+        .is_memRead(mem_memRead),
+        .is_memWrite(mem_memWrite),
+        .address(alu_result),
+        .S_data(mem_sData),
+        // Output
+        .data_out(mem_result)  
     );
     
     memwb_v memwb_uut(
+        // Inputs directly from the EX/MEM reg
         .clk(clk),                     .reset(reset), 
         .mem_isValid(mem_isValid),     .mem_pc(mem_pc), 
         .mem_instr(mem_instr),         .mem_rd(mem_rd),  
-        .mem_mem_read(mem_mem_read),   .mem_mem_write(mem_mem_write), 
-        .mem_reg_write(mem_reg_write), .mem_aluResult(mem_aluResult), 
-        .mem_memResult(mem_memResult), .wb_rd(wb_rd),  
-        .wb_mem_read(wb_mem_read),     .wb_mem_write(wb_mem_write), 
-        .wb_reg_write(wb_reg_write),   .wb_aluResult(wb_aluResult),   
-        .wb_memResult(wb_memResult)
+        .mem_mem_read(mem_memRead),    .mem_mem_write(mem_memWrite), 
+        .mem_reg_write(mem_regWrite),  .mem_aluResult(alu_result), 
+        // Input from MEM STAGE
+        .mem_memResult(mem_result),    
+        // Outputs
+        .wb_isValid(wb_isValid),       .wb_pc(wb_pc), 
+        .wb_instr(wb_instr),           .wb_rd(wb_rd),  
+        .wb_mem_read(wb_memRead),     .wb_mem_write(wb_memWrite), 
+        .wb_reg_write(wb_regWrite),   .wb_aluResult(wb_alu),   
+        .wb_memResult(wb_mem)
     );
     
+    always @(*) begin
+        wb_isValid_out   = wb_isValid;
+        wb_pc_out        = wb_pc;       
+        wb_instr_out     = wb_instr;
+        wb_rd_out        = wb_rd;
+        wb_regWrite_out  = wb_regWrite;
+        wb_memWrite_out  = wb_memWrite; 
+        wb_memRead_out   = wb_memRead;
+        wb_alu_out       = wb_alu;
+        wb_mem_out       = wb_mem;
+    end;
+    
     WB_v WB_uut(
+        // Inputs directly from the MEM/WB reg
         .is_memRead(wb_mem_read), 
         .is_memWrite(wb_mem_write), 
-        .mem_data(wb_memResult), 
-        .alu_data(wb_aluResult), 
+        .alu_data(wb_alu), 
+        .mem_data(wb_mem),
+        // Outputs
         .wb_data(wb_data) 
     );
     
+    assign wb_data_out = wb_data;
     
 endmodule
