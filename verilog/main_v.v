@@ -6,8 +6,8 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module main_v #(parameter isForw_ON = 1)(
-    input             clk, reset,
+module main_v(
+    input             clk, reset, isForw_ON,
     output reg [64:0] if_stage_out,  
     output reg        if_isValid_out,
     output reg [31:0] if_pc_out,       if_instr_out,

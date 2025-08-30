@@ -26,7 +26,7 @@ module regFile_v(
             regs[rd] <= writeData;
      end
      
-     assign readData1 = (rs1 == 0) ? 32'b0 : regs[rs1];
-     assign readData2 = (rs2 == 0) ? 32'b0 : regs[rs2];
+     assign readData1 = (rs1 == 0) ? 32'b0 :  (isWrite && rd == rs1) ? writeData : regs[rs1];
+     assign readData2 = (rs2 == 0) ? 32'b0 :  (isWrite && rd == rs2) ? writeData : regs[rs2];
     
 endmodule

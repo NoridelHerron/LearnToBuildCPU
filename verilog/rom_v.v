@@ -142,12 +142,22 @@ module rom_v (
     integer i;
     
     initial begin
-        /*$display("ROM STARTED");
+        /*
         for (i = 0; i < 1024; i = i + 1) begin
             temp_reg = generate_registers ($urandom_range(3, 5), 5'b0);
             rom[i] = generate_instruction($urandom_range(0, 5), temp_reg);
             $display("ROM[%0d] = %h", i, rom[i]);
-        end */
+        end 
+        rom[0] = 32'h001a8193;
+        rom[1] = 32'h00250213;
+        rom[2] = 32'h00330313;
+        rom[3] = 32'h00a183b3;
+        rom[4] = 32'h004a8433;
+         
+        for (i = 6; i < 1024; i = i + 1) begin
+            rom[i] = 32'h00000013;
+        end
+        */
         rom[0] = 32'h001a8193;
         rom[1] = 32'h00250213;
         rom[2] = 32'h00330313;

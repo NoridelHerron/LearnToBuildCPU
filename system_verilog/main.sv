@@ -8,8 +8,8 @@
 `include "struct_pkg.sv"   // bring in the source file
 import struct_pkg::*;      // import all typedefs, functions, etc.
 
-module main_sv #(parameter isForw_ON = 1)(
-    input  logic clk, reset,
+module main_sv (
+    input  logic clk, reset, isForw_ON,
     output if_t  if_stage_out,
     output id_t  id_stage_out,
     output ex_t  ex_stage_out,

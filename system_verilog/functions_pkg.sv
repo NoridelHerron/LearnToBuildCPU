@@ -1,5 +1,5 @@
 
-`include "constant_def.vh"
+`include "constant_def.svh"
 `include "struct_pkg.sv"
 
 package functions_pkg;

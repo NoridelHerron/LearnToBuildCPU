@@ -18,6 +18,7 @@ module tb_main();
 
     logic clk;
     logic reset;
+    logic isForw_ON;
     
     if_t  if_stage;
     id_t  id_stage;
@@ -25,8 +26,8 @@ module tb_main();
     mem_t mem_stage;
     wb_t  wb_stage;
     
-    main_v #(.isForw_ON(0)) uut(
-        .clk(clk), .reset(reset),
+    main_v uut(
+        .clk(clk), .reset(reset),               .isForw_ON(isForw_ON),
         .if_isValid_out(if_stage.isValid),
         .if_pc_out(if_stage.pc),               .if_instr_out(if_stage.instr),
         

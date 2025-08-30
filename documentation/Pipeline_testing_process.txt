@@ -1,0 +1,16 @@
+I started testing both Pipeline using the following step
+Step 1: Initialize the Pipeline with basic instruction, so I know what value to expect.
+									EXPECTED
+	rom[0] = 32'h001a8193;     		// addi x3, x21 1  		1
+        rom[1] = 32'h00250213;     		// addi x4, x10 2		2
+        rom[2] = 32'h00330313;     		// addi x6, x6 3 	  	3
+        rom[3] = 32'h00a183b3;     		// addi x7, x3, x10		1
+        rom[4] = 32'h004a8433;     		// addi x8, x21, x4		2
+        for (i = 5; i < 1024; i = i + 1) begin	// NOP 
+            rom[i] = 32'h00000013;
+        end
+
+Problem I encountered while observing the Pipeline, after the 3rd instruction, I did not see the expected value (1 (4th instr), 2 (4th instr)). I suspected the register file causing it because I initially did not handle the if rd and rs and isWrite case.
+To confirm this, I inserted NOP instruction before that, and confirmed, the register value is coming too late.
+Solution: I just added an assertion in the register file that if that's the case, just return the wb data to the register source that's needing that data.
+

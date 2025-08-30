@@ -18,21 +18,23 @@ module tb_main_sv();
 
     logic clk;
     logic reset;
-    
+    logic isForw_ON;
     if_t  if_stage;
     id_t  id_stage;
     ex_t  ex_stage;
     mem_t mem_stage;
     wb_t  wb_stage;
     
-    main_sv #(.isForw_ON(0)) uut(
+    main_sv #() uut(
         .clk(clk),                .reset(reset),
+        .isForw_ON(isForw_ON),
         .if_stage_out(if_stage),  .id_stage_out(id_stage),
         .ex_stage_out(ex_stage),  .mem_stage_out(mem_stage),
         .wb_stage_out(wb_stage)
     );
     
     initial begin
+        isForw_ON  = 1'b0;
         if_stage   = '{default:0};
         id_stage   = '{default:0};
         ex_stage   = '{default:0};
