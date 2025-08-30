@@ -3,7 +3,7 @@
 // Module Name: forw_unit
 // Created by: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
-`include "constant_def.vh"
+`include "constant_def.svh"
 
 module forw_unit_s(
         input  logic      isForw_ON,

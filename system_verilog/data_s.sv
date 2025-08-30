@@ -3,7 +3,7 @@
 // Module Name: data_s
 // Name: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
-`include "constant_def.vh"
+`include "constant_def.svh"
 
 module data_s(
         input  logic [6:0]   op,

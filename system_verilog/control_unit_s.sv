@@ -3,7 +3,7 @@
 // Module Name: Control Unit
 // Name: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
-`include "constant_def.vh"
+`include "constant_def.svh"
 
 module control_unit_s(
         input  logic [6:0] op,       // opcode

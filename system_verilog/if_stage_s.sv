@@ -3,7 +3,7 @@
 // Module Name: IF_stage
 // Created by: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
-`include "constant_def.vh"
+`include "constant_def.svh"
 
 module if_stage_s(
         input  logic        clk, reset, is_flush, is_stall,

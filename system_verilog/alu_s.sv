@@ -4,7 +4,7 @@
 // Module Name: alu_s
 // Name: Noridel Herron
 //////////////////////////////////////////////////////////////////////////////////
-`include "constant_def.vh"
+`include "constant_def.svh"
 
 module alu_s (
     input  logic [31:0]   A,

@@ -148,7 +148,8 @@ module main_v #(parameter isForw_ON = 1)(
     
     always @(*) begin
         id_op_out       = id_op;                                                
-        id_rd_out       = id_rs1;      
+        id_rd_out       = id_rd;  
+        id_rs1_out      = id_rs1;      
         id_rs2_out      = id_rs2;                                    
         id_memRead_out  = id_memWrite;
         id_regWrite_out = id_regWrite; 
