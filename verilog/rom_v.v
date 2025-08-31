@@ -149,17 +149,18 @@ module rom_v (
             $display("ROM[%0d] = %h", i, rom[i]);
         end 
         */
-        rom[0] = 32'h00150393;
-        rom[1] = 32'h00248413;
-        rom[2] = 32'h008385b3;
-        rom[3] = 32'h00b406b3;
-        rom[4] = 32'h00b687b3;
-        rom[5] = 32'h00338993;
-        rom[6] = 32'h00338a13;
+        rom[0] = 32'h00150393;  // addi x7, x10 1	1		1	
+        rom[1] = 32'h00248413;  // addi x8, x9  2	2		2
+        rom[2] = 32'h008385b3;  // add x11, x7 x8	0		3
+        rom[3] = 32'h00b406b3;  // add x13, x8 x11	0		5
+        rom[4] = 32'h00b687b3;  // add x15, x13 x11	0		8
+        rom[5] = 32'h00338993;  // addi x19, x7 3	4		4
+        rom[6] = 32'h00338a13;  // addi x20, x7 3	4		4
         
         for (i = 7; i < 1024; i = i + 1) begin
             rom[i] = 32'h00000013;
         end
+
 
     end
     

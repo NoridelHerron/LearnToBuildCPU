@@ -4,12 +4,12 @@ package struct_pkg;
 
     typedef struct packed {
         logic        isValid;
-        logic [31:0] pc, instr;
+        logic [31:0] instr, pc;
     } if_t;
     
     typedef struct packed {
         logic        isValid;
-        logic [31:0] pc,        instr;
+        logic [31:0] instr, pc;
         logic [6:0]  op;                                                    
         logic [4:0]  rd,        rs1,      rs2;                                   
         logic        memRead,   memWrite;
@@ -22,7 +22,7 @@ package struct_pkg;
     
     typedef struct packed {
         logic        isValid;
-        logic [31:0] pc,        instr;
+        logic [31:0] instr, pc;
         logic [6:0]  op;
         logic [4:0]  rd,        rs1,      rs2;
         logic        regWrite,  memWrite, memRead;
@@ -34,7 +34,7 @@ package struct_pkg;
     
     typedef struct packed {
         logic        isValid;
-        logic [31:0] pc,       instr;
+        logic [31:0] instr, pc;
         logic [4:0]  rd;
         logic        regWrite, memWrite, memRead;
         logic [31:0] alu,      store,    mem;
@@ -42,11 +42,11 @@ package struct_pkg;
     
     typedef struct packed {
         logic        isValid;
-        logic [31:0] pc,        instr;
+        logic [31:0] instr, pc;
+        logic [31:0] data;
         logic [4:0]  rd;
         logic        regWrite,  memWrite, memRead;
         logic [31:0] alu,       mem;
-        logic [31:0] data;
     } wb_t;
     
     typedef struct packed {

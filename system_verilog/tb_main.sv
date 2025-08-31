@@ -25,7 +25,7 @@ module tb_main_sv();
     mem_t mem_stage;
     wb_t  wb_stage;
     
-    main_sv #() uut(
+    main_sv uut(
         .clk(clk),                .reset(reset),
         .isForw_ON(isForw_ON),
         .if_stage_out(if_stage),  .id_stage_out(id_stage),

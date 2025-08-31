@@ -45,8 +45,10 @@ module tb_wb();
         
         task check();
             #1; // wait for the output to settle
-            if (rand_mR == 1'b1 || rand_mW == 1'b1) 
+            if (rand_mR == 1'b1) 
                 exp_data = rand_mem;
+            else if (rand_mW == 1'b1)
+                exp_data = 32'd0;
             else
                 exp_data = rand_alu;
             

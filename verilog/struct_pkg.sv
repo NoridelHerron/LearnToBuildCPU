@@ -2,14 +2,14 @@
 
 package struct_pkg;
 
-    typedef struct packed {
+    typedef struct packed { // 65 bits
         logic        isValid;
-        logic [31:0] pc, instr;
+        logic [31:0] instr, pc;
     } if_t;
     
-    typedef struct packed {
+    typedef struct packed { // 197 bits
         logic        isValid;
-        logic [31:0] pc,        instr;
+        logic [31:0] instr, pc;
         logic [6:0]  op;                                                    
         logic [4:0]  rd,        rs1,      rs2;                                   
         logic        memRead,   memWrite;
@@ -20,9 +20,9 @@ package struct_pkg;
         logic [31:0] operand1,  operand2, sData;
     } id_t;
     
-    typedef struct packed {
+    typedef struct packed { // 260 bits
         logic        isValid;
-        logic [31:0] pc,        instr;
+        logic [31:0] instr, pc;
         logic [6:0]  op;
         logic [4:0]  rd,        rs1,      rs2;
         logic        regWrite,  memWrite, memRead;
@@ -32,19 +32,19 @@ package struct_pkg;
         logic        Z, N, C, V;
     } ex_t;
     
-    typedef struct packed {
+    typedef struct packed { // 169 bits
         logic        isValid;
-        logic [31:0] pc,       instr;
+        logic [31:0] instr, pc;
         logic [4:0]  rd;
         logic        regWrite, memWrite, memRead;
         logic [31:0] alu,      store,    mem;
     } mem_t;
     
-    typedef struct packed {
+    typedef struct packed { // 169 bits
         logic        isValid;
-        logic [31:0] pc,        instr;
-        logic [4:0]  rd;
+        logic [31:0] instr, pc;
         logic        regWrite,  memWrite, memRead;
+        logic [4:0]  rd;
         logic [31:0] alu,       mem;
         logic [31:0] data;
     } wb_t;

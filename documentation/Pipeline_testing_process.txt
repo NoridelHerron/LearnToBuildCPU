@@ -31,14 +31,42 @@ Step 2: Check if hazard (forwarding) resolution works.
 	
 	Confirmed: result is as expected
 
-	rom[0] = 32'h00150393;
-        rom[1] = 32'h0023a023;
-        rom[2] = 32'h00338313;
-        rom[3] = 32'h00012503;
-        rom[4] = 32'h00130493;
-        rom[5] = 32'h00130493;
-        rom[6] = 32'h009505b3;
+Step 3:
+
+	rom[0] = 32'h00150393; 	// addi x7, x10 1 
+        rom[1] = 32'h0023a023;	// sw x7, 0(x2)
+        rom[2] = 32'h00338313;	// addi x6, x7 3
+        rom[3] = 32'h00012503;  // lw x10, 0(x2)
+        rom[4] = 32'h00130493;	// addi x9, x6 1         
+	rom[5] = 32'h009505b3;	// addi x11, x10 x9  
         
-        for (i = 7; i < 1024; i = i + 1) begin
+        for (i = 6; i < 1024; i = i + 1) begin
             rom[i] = 32'h00000013;
         end
+
+Step 4:
+	
+	rom[0] = 32'h00150393; 	// addi x7, x10 1 
+        rom[1] = 32'h0023a023;	// sw x7, 0(x2)
+        rom[2] = 32'h00338313;	// addi x6, x7 3
+        rom[3] = 32'h00012503;  // lw x10, 0(x2)        
+	rom[4] = 32'h009505b3;	// add x11, x10 x9  
+
+	for (i = 4; i < 1024; i = i + 1) begin
+            rom[i] = 32'h00000013;
+
+Step 4:
+	
+	rom[0] = 32'h00010663; 	// beq x2, x0 12 
+        rom[1] = 32'h001a81b3;	// addi x3, x21 1
+        rom[2] = 32'h00250233;	// addi x4, x10 2
+        rom[3] = 32'h00338313;  // addi x6, x7 3       
+	rom[4] = 32'h00150393;	// addi x7, x10 1 
+	rom[5] = 32'h0063da63;  // bege x7, x6 20	        
+	rom[6] = 32'h00248413;  // addi x8, x9 2	
+ 	rom[7] = 32'h008385b3;  // add x11, x7 x8
+
+	for (i = 8; i < 1024; i = i + 1) begin
+            rom[i] = 32'h00000013;
+
+   
