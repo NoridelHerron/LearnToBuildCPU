@@ -147,24 +147,19 @@ module rom_s(
             rom[i] = generate_instruction($urandom_range(0, 5), temp_reg);
             $display("ROM[%0d] = %h", i, rom[i]);
         end 
-         rom[0] = 32'h001a8193;
-        rom[1] = 32'h00250213;
-        rom[2] = 32'h00330313;
-        rom[3] = 32'h00000013;
-        rom[4] = 32'h00a183b3;
-        rom[5] = 32'h004a8433;
-        for (i = 6; i < 1024; i = i + 1) begin
-            rom[i] = 32'h00000013;
-        end
         */
-        rom[0] = 32'h001a8193;
-        rom[1] = 32'h00250213;
-        rom[2] = 32'h00330313;
-        rom[3] = 32'h00a183b3;
-        rom[4] = 32'h004a8433;
-        for (i = 5; i < 1024; i = i + 1) begin
+        rom[0] = 32'h00150393;
+        rom[1] = 32'h00248413;
+        rom[2] = 32'h008385b3;
+        rom[3] = 32'h00b406b3;
+        rom[4] = 32'h00b687b3;
+        rom[5] = 32'h00338993;
+        rom[6] = 32'h00338a13;
+        
+        for (i = 7; i < 1024; i = i + 1) begin
             rom[i] = 32'h00000013;
         end
+
     end
     
     // Assign output

@@ -76,6 +76,7 @@ module tb_main();
     end
     
     initial begin
+        isForw_ON  = 1;
         if_stage   = '{default:0};
         id_stage   = '{default:0};
         ex_stage   = '{default:0};
